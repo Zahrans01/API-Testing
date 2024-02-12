@@ -1,0 +1,3407 @@
+{
+	"info": {
+		"_postman_id": "08c3d347-347d-4877-bcd7-a57a0eae12bc",
+		"name": "Binar Challenge Gold",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "28186863",
+		"_collection_link": "https://www.postman.com/warped-comet-953472/workspace/binarqae15-zahran-syukri/collection/28186863-08c3d347-347d-4877-bcd7-a57a0eae12bc?action=share&source=collection_link&creator=28186863"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Registration",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Name is a non-empty string\", function () {\r",
+									"  const responseData = pm.response.json();\r",
+									"  \r",
+									"  pm.expect(responseData.user.name).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Value should not be empty\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Email is in a valid email format\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData.user.email).to.match(/^[\\w-]+(\\.[\\w-]+)*@([\\w-]+\\.)+[a-zA-Z]{2,7}$/);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Phone number is either null or a valid phone number\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseData.user.phone_number).to.satisfy(function (phoneNumber) {\r",
+									"        return phoneNumber === null || /^\\+?\\d{1,3}[-.\\s]?\\(?\\d{1,3}\\)?[-.\\s]?\\d{1,4}[-.\\s]?\\d{1,4}$/.test(phoneNumber);\r",
+									"    }, \"Phone number should be either null or a valid phone number\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Generate a random name\r",
+									"function generateRandomName() {\r",
+									"    const firstNames = [\"John\", \"Alice\", \"Bob\", \"Emma\", \"David\",\"Jhony\"]; // Add more first names as needed\r",
+									"    const lastNames = [\"Smith\", \"Johnson\", \"Doe\", \"Brown\", \"Wilson\"]; // Add more last names as needed\r",
+									"    const randomFirstName = firstNames[Math.floor(Math.random() * firstNames.length)];\r",
+									"    const randomLastName = lastNames[Math.floor(Math.random() * lastNames.length)];\r",
+									"    return `${randomFirstName} ${randomLastName}`;\r",
+									"}\r",
+									"const randomName = generateRandomName();\r",
+									"// Store the random name in an environment variable\r",
+									"pm.environment.set('random_name', randomName);\r",
+									"\r",
+									"\r",
+									"// Generate a random email address\r",
+									"function generateRandomEmail() {\r",
+									"    const username = Math.random().toString(36).substring(2, 12); // Generate a random username\r",
+									"    const domain = 'example.com'; // Replace 'example.com' with your desired domain\r",
+									"    return `${username}@${domain}`;\r",
+									"}\r",
+									"const randomEmail = generateRandomEmail();\r",
+									"// Store the random email in an environment variable\r",
+									"pm.environment.set('random_email', randomEmail);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"user\": {\r\n    \"name\": \"{{random_name}}\",\r\n    \"email\": \"{{random_email}}\",\r\n    \"password\": \"{{password}}\"\r\n  }\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/users.json",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users.json"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "401 - Email already taken",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "\r\n{\r\n  \"user\": {\r\n    \"name\": \"Zahran S\",\r\n    \"email\": \"zahransyukri02@gmail.com\",\r\n    \"password\": \"zahransyukri02\"\r\n  }\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/users.json",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users.json"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "nginx/1.18.0"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 04 Nov 2023 07:28:37 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-Download-Options",
+									"value": "noopen"
+								},
+								{
+									"key": "X-Permitted-Cross-Domain-Policies",
+									"value": "none"
+								},
+								{
+									"key": "Referrer-Policy",
+									"value": "strict-origin-when-cross-origin"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache"
+								},
+								{
+									"key": "X-Request-Id",
+									"value": "ccb5f888-5439-42fd-9ce1-d8ae39d2e59a"
+								},
+								{
+									"key": "X-Runtime",
+									"value": "0.280292"
+								},
+								{
+									"key": "Strict-Transport-Security",
+									"value": "max-age=63072000; includeSubDomains"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"errors\": {\n        \"email\": [\n            \"has already been taken\"\n        ]\n    }\n}"
+						},
+						{
+							"name": "200 - User Registered",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "\r\n{\r\n  \"user\": {\r\n    \"name\": \"Zahran S\",\r\n    \"email\": \"zahransyuk@gmail.com\",\r\n    \"password\": \"zahransyukri02\"\r\n  }\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/users.json",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users.json"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "nginx/1.18.0"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 04 Nov 2023 08:20:03 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-Download-Options",
+									"value": "noopen"
+								},
+								{
+									"key": "X-Permitted-Cross-Domain-Policies",
+									"value": "none"
+								},
+								{
+									"key": "Referrer-Policy",
+									"value": "strict-origin-when-cross-origin"
+								},
+								{
+									"key": "Authorization",
+									"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI4NzMwNyIsInNjcCI6InVzZXIiLCJhdWQiOm51bGwsImlhdCI6MTY5OTA4NjAwMywiZXhwIjoxNzAwMjk1NjAzLCJqdGkiOiI1NjdjM2RlNS0wNjMwLTQ1ODMtYjZlZC03MThkZmRhZGVlYjQifQ.p0ZowkPZJx4CpkY5NJnNddcOl81H-Lh6S0m1Eq57wOQ"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"f3c79d747f283544cd9fae9d5f37ade2\""
+								},
+								{
+									"key": "Cache-Control",
+									"value": "max-age=0, private, must-revalidate"
+								},
+								{
+									"key": "Set-Cookie",
+									"value": "_binar_playground_secondhand_marketplace_session=FsaKkl8kpLPNeCRtc3IGoEq%2B8a5S5sIeZedvIaIwUY7mtbjuV7%2B%2B17a3vJmxxZtRhxo8P0unLQLmXYheu4mN10BFdT9qmSTELSeIg5TYygmK%2FdOyu13%2FyUOJQ7LQng%2BO4yqsfAogjfGaBP%2FFxFQYLGIs3BaDxrm18ce6oXnwyd92WCWZ8cCN13bJnXmeVG8wMj5pOJB0r4xxrn8gdne0XgKPd7h%2Bu%2BqDRREZyRnZIIBRxE%2BWOtifDU7K%2B4eq%2FhDUgtfbOaQY7W1Xbmt2ZPFKiVABF0sxGlpzishKOJs8jaiuAZHtpoU3nCOGPkpqKvvhgnFvsTGFF2qpYFmi--9DHPTRzEF3lLDAJk--aQ7r8FRzI6REZFAkr%2B%2Ficg%3D%3D; path=/; secure; HttpOnly; SameSite=Lax"
+								},
+								{
+									"key": "X-Request-Id",
+									"value": "6ef555ea-18f2-4214-8f12-811c0c8ca7e9"
+								},
+								{
+									"key": "X-Runtime",
+									"value": "0.285257"
+								},
+								{
+									"key": "Strict-Transport-Security",
+									"value": "max-age=63072000; includeSubDomains"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"user\": {\n        \"id\": 87307,\n        \"name\": \"Zahran S\",\n        \"email\": \"zahransyuk@gmail.com\",\n        \"phone_number\": null,\n        \"address\": null\n    },\n    \"session\": {\n        \"token\": \"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI4NzMwNyIsInNjcCI6InVzZXIiLCJhdWQiOm51bGwsImlhdCI6MTY5OTA4NjAwMywiZXhwIjoxNzAwMjk1NjAzLCJqdGkiOiI1NjdjM2RlNS0wNjMwLTQ1ODMtYjZlZC03MThkZmRhZGVlYjQifQ.p0ZowkPZJx4CpkY5NJnNddcOl81H-Lh6S0m1Eq57wOQ\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Session",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Response status code is 200', function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"pm.test('Email is in a valid format', function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    pm.expect(responseData.user.email).to.match(/^[\\w-]+(\\.[\\w-]+)*@([\\w-]+\\.)+[a-zA-Z]{2,7}$/);\r",
+									"})\r",
+									"\r",
+									"pm.test('Address is null or a non-empty string', function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData.user).to.exist.and.to.be.an('object');\r",
+									"    pm.expect(responseData.user.address).to.satisfy(function (address) {\r",
+									"        return address === null || typeof address === 'string' && address.length > 0;\r",
+									"    }, 'Address should be null or a non-empty string');\r",
+									"})\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"user\": {\r\n    \"email\": \"{{secondhand_email}}\",\r\n    \"password\": \"{{password}}\"\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/users/sign_in.json",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"sign_in.json"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - Session Created",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"user\": {\r\n    \"email\": \"zahransyukri02@gmail.com\",\r\n    \"password\": \"zahransyukri02\"\r\n  }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/users/sign_in.json",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users",
+										"sign_in.json"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "nginx/1.18.0"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 04 Nov 2023 07:28:54 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-Download-Options",
+									"value": "noopen"
+								},
+								{
+									"key": "X-Permitted-Cross-Domain-Policies",
+									"value": "none"
+								},
+								{
+									"key": "Referrer-Policy",
+									"value": "strict-origin-when-cross-origin"
+								},
+								{
+									"key": "Authorization",
+									"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI4NzI4MSIsInNjcCI6InVzZXIiLCJhdWQiOm51bGwsImlhdCI6MTY5OTA4MjkzNCwiZXhwIjoxNzAwMjkyNTM0LCJqdGkiOiI5MzBkY2RjMy1jZTljLTRjZDktOGM3My01MzJlYjU4OWI4MzAifQ.DG9W1jYHqH0QzFsdpaahzUhmJZGvNpK8OoJDK5cTS_w"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"9e929df4f97ec110214be770df8887df\""
+								},
+								{
+									"key": "Cache-Control",
+									"value": "max-age=0, private, must-revalidate"
+								},
+								{
+									"key": "Set-Cookie",
+									"value": "_binar_playground_secondhand_marketplace_session=jTHBy2RBSIpiTBkzkmfG1n5zqT4gVZinm75UMKNgMTXSEEuzGIzYkFLU6oaoXtNc3FoX6uB%2FCtSAtASUoNDPWiP5iGNrqWeI5NiiOEVFFiGv591AKbsLLZ1uVYYui57sE0TZghKhsDZTUveBqq1giLmK%2BAlUEmKExPRH3mKguAbAX9xT599f351F75pbhSCgGn2MFaNs6yl7gjdIqj%2BQQVdHvApW2qEFUOzbyrr30qGITPDEENFwb7xMxcU7UDD6U3Cu1ASQ97r5zK41Q4BTplWf9oB15cyq4rm%2Fu7IIau2dW59yXxQRwAkxwfob3THU1PpAUf8DXwfMh0tk--xo%2B2QrcDebXR5pEF--uNoQlWRcWkx%2FNTUjViiYsA%3D%3D; path=/; secure; HttpOnly; SameSite=Lax"
+								},
+								{
+									"key": "X-Request-Id",
+									"value": "fbcbeebf-2441-4105-8852-568cff8a2ab8"
+								},
+								{
+									"key": "X-Runtime",
+									"value": "0.282485"
+								},
+								{
+									"key": "Strict-Transport-Security",
+									"value": "max-age=63072000; includeSubDomains"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"user\": {\n        \"id\": 87281,\n        \"name\": \"Zahran S\",\n        \"email\": \"zahransyukri02@gmail.com\",\n        \"phone_number\": null,\n        \"address\": null\n    },\n    \"session\": {\n        \"token\": \"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI4NzI4MSIsInNjcCI6InVzZXIiLCJhdWQiOm51bGwsImlhdCI6MTY5OTA4MjkzNCwiZXhwIjoxNzAwMjkyNTM0LCJqdGkiOiI5MzBkY2RjMy1jZTljLTRjZDktOGM3My01MzJlYjU4OWI4MzAifQ.DG9W1jYHqH0QzFsdpaahzUhmJZGvNpK8OoJDK5cTS_w\"\n    }\n}"
+						},
+						{
+							"name": "401 - Wrong Email",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"user\": {\r\n    \"email\": \"zahran@gmail.com\",\r\n    \"password\": \"zahransyukri02\"\r\n  }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/users/sign_in.json",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users",
+										"sign_in.json"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "nginx/1.18.0"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 04 Nov 2023 07:40:29 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache"
+								},
+								{
+									"key": "X-Request-Id",
+									"value": "555bd350-6767-423d-8c47-d6977b935741"
+								},
+								{
+									"key": "X-Runtime",
+									"value": "0.004730"
+								},
+								{
+									"key": "Strict-Transport-Security",
+									"value": "max-age=63072000; includeSubDomains"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"error\": \"Invalid Email or password.\"\n}"
+						},
+						{
+							"name": "401 - Wrong Password",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"user\": {\r\n    \"email\": \"zahransyukri02@gmail.com\",\r\n    \"password\": \"wrong\"\r\n  }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/users/sign_in.json",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users",
+										"sign_in.json"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "nginx/1.18.0"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 04 Nov 2023 07:39:16 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache"
+								},
+								{
+									"key": "X-Request-Id",
+									"value": "b9829337-288d-427e-849a-3f46a2e31c57"
+								},
+								{
+									"key": "X-Runtime",
+									"value": "0.277641"
+								},
+								{
+									"key": "Strict-Transport-Security",
+									"value": "max-age=63072000; includeSubDomains"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"error\": \"Invalid Email or password.\"\n}"
+						}
+					]
+				}
+			],
+			"description": "**Akun Seller:**\n\n[zahransyukri022@gmail.com](https://mailto:zahransyukri022@gmail.com)\n\nZahransyukri01\n\n**Akun Buyer:**\n\n[zahransyukri02@gmail.com](https://mailto:zahransyukri02@gmail.com)\n\nzahransyukri02\n\nENVIRONMENT : testing"
+		},
+		{
+			"name": "Categories",
+			"item": [
+				{
+					"name": "List Categories",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is within acceptable range\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200, \"Response time should be below 200ms\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/categories.json",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"categories.json"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - Categories Listed",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/categories.json",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"categories.json"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "nginx/1.18.0"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 04 Nov 2023 08:09:49 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-Download-Options",
+									"value": "noopen"
+								},
+								{
+									"key": "X-Permitted-Cross-Domain-Policies",
+									"value": "none"
+								},
+								{
+									"key": "Referrer-Policy",
+									"value": "strict-origin-when-cross-origin"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"5411b7f44637465231bc27d78e1bb8ca\""
+								},
+								{
+									"key": "Cache-Control",
+									"value": "max-age=0, private, must-revalidate"
+								},
+								{
+									"key": "X-Request-Id",
+									"value": "f318e191-9c3d-48b7-98ea-b2b6d1735457"
+								},
+								{
+									"key": "X-Runtime",
+									"value": "0.005063"
+								},
+								{
+									"key": "Strict-Transport-Security",
+									"value": "max-age=63072000; includeSubDomains"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"categories\": [\n        {\n            \"id\": 1,\n            \"name\": \"Hobi\",\n            \"url\": \"https://secondhand.binaracademy.org/categories/1\"\n        },\n        {\n            \"id\": 2,\n            \"name\": \"Kendaraan\",\n            \"url\": \"https://secondhand.binaracademy.org/categories/2\"\n        },\n        {\n            \"id\": 3,\n            \"name\": \"Baju\",\n            \"url\": \"https://secondhand.binaracademy.org/categories/3\"\n        },\n        {\n            \"id\": 4,\n            \"name\": \"Elektronik\",\n            \"url\": \"https://secondhand.binaracademy.org/categories/4\"\n        },\n        {\n            \"id\": 5,\n            \"name\": \"Kesehatan\",\n            \"url\": \"https://secondhand.binaracademy.org/categories/5\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Category",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Category object has the required properties\", function () {\r",
+									"    var responseData = pm.response.json();\r",
+									"    var category = responseData.category;\r",
+									"\r",
+									"    pm.expect(category).to.be.an('object');\r",
+									"    pm.expect(category).to.have.property('id');\r",
+									"    pm.expect(category).to.have.property('name');\r",
+									"    pm.expect(category).to.have.property('url');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Category object has non-empty values\", function () {\r",
+									"    var responseData = pm.response.json();\r",
+									"    var category = responseData.category;\r",
+									"\r",
+									"    pm.expect(category.id).to.be.a('number').and.to.be.greaterThan(0);\r",
+									"    pm.expect(category.name).to.be.a('string').and.to.have.lengthOf.above(0);\r",
+									"    pm.expect(category.url).to.be.a('string').and.to.have.lengthOf.above(0);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/categories/5.json",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"categories",
+								"5.json"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - Category Retrieved",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/categories/5.json",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"categories",
+										"5.json"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "nginx/1.18.0"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 04 Nov 2023 08:10:38 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-Download-Options",
+									"value": "noopen"
+								},
+								{
+									"key": "X-Permitted-Cross-Domain-Policies",
+									"value": "none"
+								},
+								{
+									"key": "Referrer-Policy",
+									"value": "strict-origin-when-cross-origin"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"0857934b89584f36010bbfd851c3e8d1\""
+								},
+								{
+									"key": "Cache-Control",
+									"value": "max-age=0, private, must-revalidate"
+								},
+								{
+									"key": "X-Request-Id",
+									"value": "25f53e15-461e-49d4-a505-15ce8a62aeec"
+								},
+								{
+									"key": "X-Runtime",
+									"value": "0.005006"
+								},
+								{
+									"key": "Strict-Transport-Security",
+									"value": "max-age=63072000; includeSubDomains"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"category\": {\n        \"id\": 5,\n        \"name\": \"Kesehatan\",\n        \"url\": \"https://secondhand.binaracademy.org/categories/5\"\n    }\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Offers",
+			"item": [
+				{
+					"name": "Create Offer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is within acceptable range\", function () {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"offer\": {\r\n    \"price\": \"{{random_product_price}}\",\r\n    \"to_id\": \"87281\",\r\n    \"product_id\": \"51438\"\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/offers.json",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"offers.json"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "201 - Offer Created",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"offer\": {\r\n    \"price\": \"2500\",\r\n    \"to_id\": \"87281\",\r\n    \"product_id\": \"51360\"\r\n  }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/offers.json",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"offers.json"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "nginx/1.18.0"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 04 Nov 2023 08:31:29 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-Download-Options",
+									"value": "noopen"
+								},
+								{
+									"key": "X-Permitted-Cross-Domain-Policies",
+									"value": "none"
+								},
+								{
+									"key": "Referrer-Policy",
+									"value": "strict-origin-when-cross-origin"
+								},
+								{
+									"key": "Location",
+									"value": "https://secondhand.binaracademy.org/offers/40786"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"b467d158e3e2d3960f285217965af0a1\""
+								},
+								{
+									"key": "Cache-Control",
+									"value": "max-age=0, private, must-revalidate"
+								},
+								{
+									"key": "Set-Cookie",
+									"value": "_binar_playground_secondhand_marketplace_session=wjwfKI5BcP3h2sGwh8ySNeV8TevM755XHBJREFxOA4EmHik%2BF81Q%2F9zaSToKULqj2f%2B7v2G4qcLThu%2FQO3Fse9q0i4r%2FbMx7u4SWXlFaEy1MmHKF4TYgna7ToyJH6xxWxHNMgiVwoS8RrMkhndVyMuixB0eCcx8fqAPKUElUCzWXrtcMm60fLFaqU%2FQEUD2KKsKhSNaGsTpmGx0imYZhdl%2FiiFmrrcmwathPHBnElTlJi5qXrsOFiRHyQxtvHpTSW%2BQGuSPZJidofjta163YIpCFOhRnVGBUxh5iVTKiJFFtlfQiqgahMSu7bHOFklwQ2Zyb3nsQ%2Fbk95aaZ--oeQha7S3drsERdVk--5YmTPz33p948FNprXB78sw%3D%3D; path=/; secure; HttpOnly; SameSite=Lax"
+								},
+								{
+									"key": "X-Request-Id",
+									"value": "6cd0eedf-272f-41e4-9ddd-fb5d2d7ebf22"
+								},
+								{
+									"key": "X-Runtime",
+									"value": "0.041881"
+								},
+								{
+									"key": "Strict-Transport-Security",
+									"value": "max-age=63072000; includeSubDomains"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"offer\": {\n        \"id\": 40786,\n        \"price\": 2500,\n        \"status\": \"initiated\",\n        \"created_at\": \"2023-11-04T08:31:29.644Z\",\n        \"updated_at\": \"2023-11-04T08:31:29.644Z\",\n        \"product\": {\n            \"id\": 51360,\n            \"name\": \"Bedak\",\n            \"price\": 9999,\n            \"description\": \"Jalan\",\n            \"category_id\": 5,\n            \"user_id\": 85169,\n            \"created_at\": \"2023-11-01T20:09:10.460Z\",\n            \"updated_at\": \"2023-11-01T20:10:34.711Z\",\n            \"url\": \"https://secondhand.binaracademy.org/products/51360.json\",\n            \"user\": {\n                \"id\": 85169,\n                \"name\": \"Zahran S\",\n                \"email\": \"zahransyukri022@gmail.com\",\n                \"phone_number\": \"085756220184\",\n                \"address\": \"Jakal km7\",\n                \"city\": {\n                    \"id\": 2,\n                    \"name\": \"Jogja\"\n                },\n                \"avatar\": {\n                    \"filename\": \"3.PNG\",\n                    \"url\": \"/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBNFFaQXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--6c40a361c6fbbb49f7ba906081d0928dc314c7d3/3.PNG\"\n                }\n            },\n            \"images\": [\n                {\n                    \"id\": \"eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBK1kxQXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--a5590d5b884662cf1f901646127cbb2103d06065\",\n                    \"filename\": \"download.1jpg.jpg\",\n                    \"url\": \"/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBK1kxQXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--a5590d5b884662cf1f901646127cbb2103d06065/download.1jpg.jpg\"\n                }\n            ]\n        },\n        \"to\": {\n            \"id\": 87281,\n            \"name\": \"Zahran\",\n            \"email\": \"zahransyukri02@gmail.com\",\n            \"phone_number\": \"081908001755\",\n            \"address\": \"Jalan jalan\",\n            \"avatar\": {\n                \"filename\": \"images (1).jpg\",\n                \"url\": \"/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBeTg0QXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--756e3e5d68a33472f49665751a80edee257e5309/images%20(1).jpg\"\n            }\n        },\n        \"from\": {\n            \"id\": 87281,\n            \"name\": \"Zahran\",\n            \"email\": \"zahransyukri02@gmail.com\",\n            \"phone_number\": \"081908001755\",\n            \"address\": \"Jalan jalan\",\n            \"avatar\": {\n                \"filename\": \"images (1).jpg\",\n                \"url\": \"/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBeTg0QXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--756e3e5d68a33472f49665751a80edee257e5309/images%20(1).jpg\"\n            }\n        }\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "List Offers",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body has meta property\", function () {\r",
+									"    pm.expect(pm.response.json()).to.have.property('meta');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body has offers property\", function () {\r",
+									"    pm.expect(pm.response.json()).to.have.property('offers');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Meta property has page_next value\", function () {\r",
+									"    pm.expect(pm.response.json().meta).to.have.property('page_next');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Meta property has page_previous value\", function () {\r",
+									"    pm.expect(pm.response.json().meta).to.have.property('page_previous');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Meta property has page_size value\", function () {\r",
+									"    pm.expect(pm.response.json().meta).to.have.property('page_size');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Meta property has page_count value\", function () {\r",
+									"    pm.expect(pm.response.json().meta).to.have.property('page_count');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Meta property has total value\", function () {\r",
+									"    pm.expect(pm.response.json().meta).to.have.property('total');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Offers property is an array\", function () {\r",
+									"    pm.expect(pm.response.json().offers).to.be.an('array');\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/users/:user_id/offers.json",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								":user_id",
+								"offers.json"
+							],
+							"variable": [
+								{
+									"key": "user_id",
+									"value": "87281"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - Offers Listed",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/users/:user_id/offers.json",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users",
+										":user_id",
+										"offers.json"
+									],
+									"variable": [
+										{
+											"key": "user_id",
+											"value": "87281"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "nginx/1.18.0"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 04 Nov 2023 16:11:52 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-Download-Options",
+									"value": "noopen"
+								},
+								{
+									"key": "X-Permitted-Cross-Domain-Policies",
+									"value": "none"
+								},
+								{
+									"key": "Referrer-Policy",
+									"value": "strict-origin-when-cross-origin"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"ebdc5ef073aaf8696a3a5d8605da05da\""
+								},
+								{
+									"key": "Cache-Control",
+									"value": "max-age=0, private, must-revalidate"
+								},
+								{
+									"key": "Set-Cookie",
+									"value": "_binar_playground_secondhand_marketplace_session=yRje8KJaNHuH8BSZUz58RXL3Zn8qlCJ%2F%2FLM20W0KGyzvfS9N%2BmgPRedVpGznEf%2BZBA9gweHmM2%2BFKTYLP1LA%2BhirO3C3izGW%2FycvJZRX%2Bk%2BnqJ5DOe1a4TH1A147ytB1ITVMPGhlLq1G6oSL4zNBhIK754yrAsoGVMn7wphvbUvmwuXV72wQV8GGuF9nXjmhvMhr4lnQRbxManhVEIPZ%2Bi5zjE56T8g8--sfn2L8PBTq2G2C75--Jb6%2Bqd7VrHLir1PUzqfiWw%3D%3D; path=/; secure; HttpOnly; SameSite=Lax"
+								},
+								{
+									"key": "X-Request-Id",
+									"value": "e3557748-ddfd-404f-8fec-5d15b6a98bf9"
+								},
+								{
+									"key": "X-Runtime",
+									"value": "0.031083"
+								},
+								{
+									"key": "Strict-Transport-Security",
+									"value": "max-age=63072000; includeSubDomains"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"page_next\": null,\n        \"page_previous\": null,\n        \"page_size\": 10,\n        \"page_count\": 1,\n        \"total\": 1\n    },\n    \"offers\": [\n        {\n            \"id\": 40806,\n            \"price\": 878,\n            \"status\": \"initiated\",\n            \"created_at\": \"2023-11-04T16:09:33.147Z\",\n            \"updated_at\": \"2023-11-04T16:09:33.147Z\",\n            \"product\": {\n                \"id\": 51360,\n                \"name\": \"Bedak\",\n                \"price\": 9999,\n                \"description\": \"Jalan\",\n                \"category_id\": 5,\n                \"user_id\": 85169,\n                \"created_at\": \"2023-11-01T20:09:10.460Z\",\n                \"updated_at\": \"2023-11-01T20:10:34.711Z\",\n                \"url\": \"https://secondhand.binaracademy.org/products/51360.json\",\n                \"user\": {\n                    \"id\": 85169,\n                    \"name\": \"Zahran S\",\n                    \"email\": \"zahransyukri022@gmail.com\",\n                    \"phone_number\": \"085756220184\",\n                    \"address\": \"Jakal km7\",\n                    \"city\": {\n                        \"id\": 2,\n                        \"name\": \"Jogja\"\n                    },\n                    \"avatar\": {\n                        \"filename\": \"3.PNG\",\n                        \"url\": \"/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBNFFaQXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--6c40a361c6fbbb49f7ba906081d0928dc314c7d3/3.PNG\"\n                    }\n                },\n                \"images\": [\n                    {\n                        \"id\": \"eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBK1kxQXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--a5590d5b884662cf1f901646127cbb2103d06065\",\n                        \"filename\": \"download.1jpg.jpg\",\n                        \"url\": \"/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBK1kxQXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--a5590d5b884662cf1f901646127cbb2103d06065/download.1jpg.jpg\"\n                    }\n                ]\n            },\n            \"to\": {\n                \"id\": 85169,\n                \"name\": \"Zahran S\",\n                \"email\": \"zahransyukri022@gmail.com\",\n                \"phone_number\": \"085756220184\",\n                \"address\": \"Jakal km7\",\n                \"city\": {\n                    \"id\": 2,\n                    \"name\": \"Jogja\"\n                },\n                \"avatar\": {\n                    \"filename\": \"3.PNG\",\n                    \"url\": \"/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBNFFaQXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--6c40a361c6fbbb49f7ba906081d0928dc314c7d3/3.PNG\"\n                }\n            },\n            \"from\": {\n                \"id\": 87281,\n                \"name\": \"Zahran\",\n                \"email\": \"zahransyukri02@gmail.com\",\n                \"phone_number\": \"081908001755\",\n                \"address\": \"Jalan jalan\",\n                \"avatar\": {\n                    \"filename\": \"images (1).jpg\",\n                    \"url\": \"/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBeTg0QXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--756e3e5d68a33472f49665751a80edee257e5309/images%20(1).jpg\"\n                }\n            }\n        }\n    ]\n}"
+						},
+						{
+							"name": "401 - Error: Unauthorized",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/users/:user_id/offers.json",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users",
+										":user_id",
+										"offers.json"
+									],
+									"variable": [
+										{
+											"key": "user_id",
+											"value": "85169",
+											"description": "(Required) "
+										}
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "nginx/1.18.0"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 04 Nov 2023 08:33:53 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache"
+								},
+								{
+									"key": "X-Request-Id",
+									"value": "b345789a-aa31-462f-8802-dec8779c7b86"
+								},
+								{
+									"key": "X-Runtime",
+									"value": "0.002651"
+								},
+								{
+									"key": "Strict-Transport-Security",
+									"value": "max-age=63072000; includeSubDomains"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"error\": \"Not enough or too many segments\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Update Offer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"offer\": {\r\n    \"status\": \"denied\"\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/offers/{{id}}.json",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"offers",
+								"{{id}}.json"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - Offer Updated (Denied)",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"offer\": {\r\n    \"status\": \"denied\"\r\n  }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/offers/40802.json",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"offers",
+										"40802.json"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "nginx/1.18.0"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 04 Nov 2023 15:54:40 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-Download-Options",
+									"value": "noopen"
+								},
+								{
+									"key": "X-Permitted-Cross-Domain-Policies",
+									"value": "none"
+								},
+								{
+									"key": "Referrer-Policy",
+									"value": "strict-origin-when-cross-origin"
+								},
+								{
+									"key": "Location",
+									"value": "https://secondhand.binaracademy.org/offers/40802"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"58d175955589c0ca1a3988101220e05d\""
+								},
+								{
+									"key": "Cache-Control",
+									"value": "max-age=0, private, must-revalidate"
+								},
+								{
+									"key": "Set-Cookie",
+									"value": "_binar_playground_secondhand_marketplace_session=QQQw5LlxQhv04ossVnSxnDF%2B6JQK48ZEPL25W9KMxL1%2FROzn%2B65oEjb5%2BXpAjaH%2Fi0RXrA%2B8G01ulr2GHsHD8Q6fy%2BemDfW9sUEI8V0iNf6%2FC33e3MhNPaVS6Tfq%2FZHSmHLABCnyUKzNnsoWrN0n7Tqen%2FihuZOu1MtUKw0x9TrNWsIGmbMOPlfRYH7uiTXbhapBC2LMyR4jfbvFIo3Vzs60R7naSwNlHw5lOoa0XsGmmdF%2FkxrwUWkqUbemp6sy0f6YlC5etMRGYOK9sNFW%2FEnAkd0ue2qzhJFUWQ7AspMNmqgktDqRN08ZEQ1Py4GK%2BprPVk5JCnKNMIpy--91Tlid6%2FW%2FQb8x0r--b2ueh9uhzkWJlazaYhXUDQ%3D%3D; path=/; secure; HttpOnly; SameSite=Lax"
+								},
+								{
+									"key": "X-Request-Id",
+									"value": "6758a8ee-0f13-45d5-a40c-3db7f65b67a3"
+								},
+								{
+									"key": "X-Runtime",
+									"value": "0.027650"
+								},
+								{
+									"key": "Strict-Transport-Security",
+									"value": "max-age=63072000; includeSubDomains"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"offer\": {\n        \"id\": 40802,\n        \"price\": 10000,\n        \"status\": \"denied\",\n        \"created_at\": \"2023-11-04T15:04:35.814Z\",\n        \"updated_at\": \"2023-11-04T15:54:40.249Z\",\n        \"product\": {\n            \"id\": 51360,\n            \"name\": \"Bedak\",\n            \"price\": 9999,\n            \"description\": \"Jalan\",\n            \"category_id\": 5,\n            \"user_id\": 85169,\n            \"created_at\": \"2023-11-01T20:09:10.460Z\",\n            \"updated_at\": \"2023-11-01T20:10:34.711Z\",\n            \"url\": \"https://secondhand.binaracademy.org/products/51360.json\",\n            \"user\": {\n                \"id\": 85169,\n                \"name\": \"Zahran S\",\n                \"email\": \"zahransyukri022@gmail.com\",\n                \"phone_number\": \"085756220184\",\n                \"address\": \"Jakal km7\",\n                \"city\": {\n                    \"id\": 2,\n                    \"name\": \"Jogja\"\n                },\n                \"avatar\": {\n                    \"filename\": \"3.PNG\",\n                    \"url\": \"/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBNFFaQXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--6c40a361c6fbbb49f7ba906081d0928dc314c7d3/3.PNG\"\n                }\n            },\n            \"images\": [\n                {\n                    \"id\": \"eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBK1kxQXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--a5590d5b884662cf1f901646127cbb2103d06065\",\n                    \"filename\": \"download.1jpg.jpg\",\n                    \"url\": \"/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBK1kxQXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--a5590d5b884662cf1f901646127cbb2103d06065/download.1jpg.jpg\"\n                }\n            ]\n        },\n        \"to\": {\n            \"id\": 85169,\n            \"name\": \"Zahran S\",\n            \"email\": \"zahransyukri022@gmail.com\",\n            \"phone_number\": \"085756220184\",\n            \"address\": \"Jakal km7\",\n            \"city\": {\n                \"id\": 2,\n                \"name\": \"Jogja\"\n            },\n            \"avatar\": {\n                \"filename\": \"3.PNG\",\n                \"url\": \"/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBNFFaQXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--6c40a361c6fbbb49f7ba906081d0928dc314c7d3/3.PNG\"\n            }\n        },\n        \"from\": {\n            \"id\": 87310,\n            \"name\": \"sayasaya\",\n            \"email\": \"sayazahran@gmail.com\",\n            \"phone_number\": \"081908001666\",\n            \"address\": \"Jalan jalan\",\n            \"avatar\": {\n                \"filename\": \"beat.jpg\",\n                \"url\": \"/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBMk00QXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--95e82f199fc30c978e26f8ca1304493894bba222/beat.jpg\"\n            }\n        }\n    }\n}"
+						},
+						{
+							"name": "200 - Offer Updated (Accepted)",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"offer\": {\r\n    \"status\": \"accepted\"\r\n  }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/offers/40805.json",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"offers",
+										"40805.json"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "nginx/1.18.0"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 04 Nov 2023 15:57:06 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-Download-Options",
+									"value": "noopen"
+								},
+								{
+									"key": "X-Permitted-Cross-Domain-Policies",
+									"value": "none"
+								},
+								{
+									"key": "Referrer-Policy",
+									"value": "strict-origin-when-cross-origin"
+								},
+								{
+									"key": "Location",
+									"value": "https://secondhand.binaracademy.org/offers/40805"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"c6c1e91146dd7b0e72794d7a5ccc4bf7\""
+								},
+								{
+									"key": "Cache-Control",
+									"value": "max-age=0, private, must-revalidate"
+								},
+								{
+									"key": "Set-Cookie",
+									"value": "_binar_playground_secondhand_marketplace_session=meiycnzYWqJqD64xXKMaXLqBeugeE6CdP7IKOJUl2E%2BP6Gv0sXl1j0a9dv9pbEptFdVjLNSEsgpaLfgHaCH1BHyCB%2BJl%2FcZaCVu2gkEdbe11gfdWFQZBQPlEUiTbInDYXrZOgINRTApVsg0taIsNhtm1RO857Oa6MJT%2F0oA1v6SbVwuLKnV8bas2B1zT7aQzRndqndeBjk7p4OK5T2rfcJKkv3sCWbn9VR609Mwh2lRfan6NEhIPKfrVXRQi1vZTOiFnwV8DT1lAFyIgVEx8j9GaZtzX%2BakJ2rJB198V9G1H2n%2FMLi2sXQ81YqwBnOujg7zt1v98UZJi6BnO--cb3Bjp0%2Bc8KCZo5W--nEWMb1KRwSUDgCVegtLhrg%3D%3D; path=/; secure; HttpOnly; SameSite=Lax"
+								},
+								{
+									"key": "X-Request-Id",
+									"value": "7ac368d4-2dc7-47f1-9952-48c6208a0fa6"
+								},
+								{
+									"key": "X-Runtime",
+									"value": "0.025132"
+								},
+								{
+									"key": "Strict-Transport-Security",
+									"value": "max-age=63072000; includeSubDomains"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"offer\": {\n        \"id\": 40805,\n        \"price\": 22,\n        \"status\": \"accepted\",\n        \"created_at\": \"2023-11-04T15:56:10.609Z\",\n        \"updated_at\": \"2023-11-04T15:57:06.021Z\",\n        \"product\": {\n            \"id\": 51360,\n            \"name\": \"Bedak\",\n            \"price\": 9999,\n            \"description\": \"Jalan\",\n            \"category_id\": 5,\n            \"user_id\": 85169,\n            \"created_at\": \"2023-11-01T20:09:10.460Z\",\n            \"updated_at\": \"2023-11-01T20:10:34.711Z\",\n            \"url\": \"https://secondhand.binaracademy.org/products/51360.json\",\n            \"user\": {\n                \"id\": 85169,\n                \"name\": \"Zahran S\",\n                \"email\": \"zahransyukri022@gmail.com\",\n                \"phone_number\": \"085756220184\",\n                \"address\": \"Jakal km7\",\n                \"city\": {\n                    \"id\": 2,\n                    \"name\": \"Jogja\"\n                },\n                \"avatar\": {\n                    \"filename\": \"3.PNG\",\n                    \"url\": \"/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBNFFaQXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--6c40a361c6fbbb49f7ba906081d0928dc314c7d3/3.PNG\"\n                }\n            },\n            \"images\": [\n                {\n                    \"id\": \"eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBK1kxQXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--a5590d5b884662cf1f901646127cbb2103d06065\",\n                    \"filename\": \"download.1jpg.jpg\",\n                    \"url\": \"/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBK1kxQXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--a5590d5b884662cf1f901646127cbb2103d06065/download.1jpg.jpg\"\n                }\n            ]\n        },\n        \"to\": {\n            \"id\": 85169,\n            \"name\": \"Zahran S\",\n            \"email\": \"zahransyukri022@gmail.com\",\n            \"phone_number\": \"085756220184\",\n            \"address\": \"Jakal km7\",\n            \"city\": {\n                \"id\": 2,\n                \"name\": \"Jogja\"\n            },\n            \"avatar\": {\n                \"filename\": \"3.PNG\",\n                \"url\": \"/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBNFFaQXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--6c40a361c6fbbb49f7ba906081d0928dc314c7d3/3.PNG\"\n            }\n        },\n        \"from\": {\n            \"id\": 85169,\n            \"name\": \"Zahran S\",\n            \"email\": \"zahransyukri022@gmail.com\",\n            \"phone_number\": \"085756220184\",\n            \"address\": \"Jakal km7\",\n            \"city\": {\n                \"id\": 2,\n                \"name\": \"Jogja\"\n            },\n            \"avatar\": {\n                \"filename\": \"3.PNG\",\n                \"url\": \"/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBNFFaQXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--6c40a361c6fbbb49f7ba906081d0928dc314c7d3/3.PNG\"\n            }\n        }\n    }\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "Create Product",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Define an array of random IT computer product names\r",
+									"const computerProductNames = [\r",
+									"    \"Laptop\", \"Desktop Computer\", \"Monitor\", \"Keyboard\", \"Mouse\", \"Router\", \"External Hard Drive\",\r",
+									"    \"Webcam\", \"Printer\", \"Scanner\", \"Graphics Card\", \"Motherboard\", \"CPU\", \"RAM\", \"SSD\",\r",
+									"    \"Software License\", \"Tablet\", \"Server\", \"UPS\", \"Network Switch\"\r",
+									"];\r",
+									"// Generate a random IT computer product name\r",
+									"function generateRandomComputerProductName() {\r",
+									"    const randomIndex = Math.floor(Math.random() * computerProductNames.length);\r",
+									"    return computerProductNames[randomIndex];\r",
+									"}\r",
+									"const randomComputerProductName = generateRandomComputerProductName();\r",
+									"// Store the random computer product name in an environment variable\r",
+									"pm.environment.set('random_computer_product_name', randomComputerProductName);\r",
+									"\r",
+									"// Define an array of random product descriptions\r",
+									"const productDescriptions = [\r",
+									"    \"High-performance and reliable\",\r",
+									"    \"Sleek and modern design\",\r",
+									"    \"Built to last with top-quality materials\",\r",
+									"    \"Versatile and easy to use\",\r",
+									"    \"Cutting-edge technology for superior performance\",\r",
+									"    \"Ergonomically designed for comfort\",\r",
+									"    \"Enhance your productivity with this product\",\r",
+									"    \"Experience the future of technology\",\r",
+									"    \"Affordable and feature-packed\",\r",
+									"    \"Innovative and stylish\",\r",
+									"    \"Ideal for both personal and professional use\",\r",
+									"    \"Eco-friendly and energy-efficient\",\r",
+									"    \"Seamless connectivity and compatibility\",\r",
+									"    \"Get the job done with ease\",\r",
+									"    \"Upgrade your setup with this exceptional product\",\r",
+									"    \"Stay ahead with the latest in tech\",\r",
+									"];\r",
+									"\r",
+									"// Generate a random product description\r",
+									"function generateRandomProductDescription() {\r",
+									"    const randomIndex = Math.floor(Math.random() * productDescriptions.length);\r",
+									"    return productDescriptions[randomIndex];\r",
+									"}\r",
+									"const randomProductDescription = generateRandomProductDescription();\r",
+									"// Store the random product description in an environment variable\r",
+									"pm.environment.set('random_product_description', randomProductDescription);\r",
+									"\r",
+									"// Generate a random product price\r",
+									"function generateRandomProductPrice(min, max, decimalPlaces) {\r",
+									"    const price = (Math.random() * (max - min) + min).toFixed(decimalPlaces);\r",
+									"    return parseFloat(price).toFixed(decimalPlaces);\r",
+									"}\r",
+									"const minPrice = 100000.00; // Define the minimum price\r",
+									"const maxPrice = 5000000.00; // Define the maximum price\r",
+									"const decimalPlaces = 0; // Define the number of decimal places\r",
+									"const randomProductPrice = generateRandomProductPrice(minPrice, maxPrice, decimalPlaces);\r",
+									"// Store the random product price in an environment variable\r",
+									"pm.environment.set('random_product_price', randomProductPrice);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"pm.test(\"Response status code is 201\", function () {\r",
+									"    pm.expect(pm.response.code).to.equal(201);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Name is a non-empty string\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData.product.name).to.exist.and.to.be.a('string').and.to.have.lengthOf.at.least(1, \"Value should not be empty\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Price is a non-negative number\", function () {\r",
+									"  const responseData = pm.response.json();\r",
+									"  \r",
+									"  pm.expect(responseData.product.price).to.be.a('number').and.to.be.at.least(0);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Description is a non-empty string\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData.product.description).to.exist.and.to.be.a('string').and.to.have.lengthOf.at.least(1, \"Value should not be empty\");\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "product[name]",
+									"value": "{{random_computer_product_name}}",
+									"description": "(Required) ",
+									"type": "text"
+								},
+								{
+									"key": "product[price]",
+									"value": "{{random_product_price}}",
+									"description": "(Required) ",
+									"type": "text"
+								},
+								{
+									"key": "product[description]",
+									"value": "{{random_product_description}}",
+									"description": "(Required) ",
+									"type": "text"
+								},
+								{
+									"key": "product[status]",
+									"value": "published",
+									"description": "(Required)  (This can only be one of draft,published)",
+									"type": "text"
+								},
+								{
+									"key": "product[category_id]",
+									"value": "1",
+									"description": "(Required) ",
+									"type": "text"
+								},
+								{
+									"key": "product[images][]",
+									"description": "(Required) ",
+									"type": "file",
+									"src": "barang-elektronik_20180823_121413.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/products.json",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products.json"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "201 - Product Created",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "multipart/form-data"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "product[name]",
+											"value": "Honda Beat",
+											"description": "(Required) ",
+											"type": "text"
+										},
+										{
+											"key": "product[price]",
+											"value": "200000",
+											"description": "(Required) ",
+											"type": "text"
+										},
+										{
+											"key": "product[description]",
+											"value": "Honda beat bisa terbang",
+											"description": "(Required) ",
+											"type": "text"
+										},
+										{
+											"key": "product[status]",
+											"value": "draft",
+											"description": "(Required)  (This can only be one of draft,published)",
+											"type": "text"
+										},
+										{
+											"key": "product[category_id]",
+											"value": "3",
+											"description": "(Required) ",
+											"type": "text"
+										},
+										{
+											"key": "product[images][]",
+											"description": "(Required) ",
+											"type": "file",
+											"src": "beat.jpg"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/products.json",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products.json"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "nginx/1.18.0"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 04 Nov 2023 07:49:14 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-Download-Options",
+									"value": "noopen"
+								},
+								{
+									"key": "X-Permitted-Cross-Domain-Policies",
+									"value": "none"
+								},
+								{
+									"key": "Referrer-Policy",
+									"value": "strict-origin-when-cross-origin"
+								},
+								{
+									"key": "Location",
+									"value": "https://secondhand.binaracademy.org/products/51438"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"05a0c46bcbc6f6e0ed2e06e0b8050a1a\""
+								},
+								{
+									"key": "Cache-Control",
+									"value": "max-age=0, private, must-revalidate"
+								},
+								{
+									"key": "Set-Cookie",
+									"value": "_binar_playground_secondhand_marketplace_session=pN8Sk7DDSNUq07lptA56h3EKsXpVF%2BGc7gzQkYyUsDeyr8xNGMkAWedBPU9RbayanHgzs1la3y1fx0iimGzf5qzfWu5LooCWuahYlePEU8CSXkg6SBGmBDWcizOl0Xm%2Fc2EnUkjPdgXl9QKDHto78IfbRUEVcUdJ5QX1oz4X3TvJ%2F9faWdnTZaJ%2FPUtoP2MtlLoTtXIEtBGcoyAoKzjvvPd7Y34iWU2cgORDLVm5CKzGlrN5KgL4605U%2FQlfbuT7bM1m%2BWX%2Fy3vsAR4lRF26pPunU5AghycKhlLNJMe66aDe8bgk9rVZ7VcQuHGREXHovabH7cmTyqFlKKqn--Q0BuTl0zYM50BXJg--0PvW6SDj5OWcbKXTZNVLXw%3D%3D; path=/; secure; HttpOnly; SameSite=Lax"
+								},
+								{
+									"key": "X-Request-Id",
+									"value": "05a27a25-76c7-41a7-a3a9-bfd72e63292a"
+								},
+								{
+									"key": "X-Runtime",
+									"value": "0.334569"
+								},
+								{
+									"key": "Strict-Transport-Security",
+									"value": "max-age=63072000; includeSubDomains"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"product\": {\n        \"id\": 51438,\n        \"name\": \"Honda Beat\",\n        \"price\": 200000,\n        \"description\": \"Honda beat bisa terbang\",\n        \"category_id\": 3,\n        \"user_id\": 87281,\n        \"created_at\": \"2023-11-04T07:49:14.185Z\",\n        \"updated_at\": \"2023-11-04T07:49:14.190Z\",\n        \"url\": \"https://secondhand.binaracademy.org/products/51438.json\",\n        \"user\": {\n            \"id\": 87281,\n            \"name\": \"Zahran\",\n            \"email\": \"zahransyukri02@gmail.com\",\n            \"phone_number\": \"081908001755\",\n            \"address\": \"Jalan jalan\",\n            \"avatar\": {\n                \"filename\": \"images (1).jpg\",\n                \"url\": \"/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBeTg0QXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--756e3e5d68a33472f49665751a80edee257e5309/images%20(1).jpg\"\n            }\n        },\n        \"images\": [\n            {\n                \"id\": \"eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBekU0QXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--c6e5701aef31eda60f0814cd5739ed9aed6add3d\",\n                \"filename\": \"beat.jpg\",\n                \"url\": \"/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBekU0QXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--c6e5701aef31eda60f0814cd5739ed9aed6add3d/beat.jpg\"\n            }\n        ]\n    }\n}"
+						},
+						{
+							"name": "401 - Error: Unauthorized",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "multipart/form-data"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "product[name]",
+											"value": "Honda Beat",
+											"description": "(Required) ",
+											"type": "text"
+										},
+										{
+											"key": "product[price]",
+											"value": "200000",
+											"description": "(Required) ",
+											"type": "text"
+										},
+										{
+											"key": "product[description]",
+											"value": "Honda beat bisa terbang",
+											"description": "(Required) ",
+											"type": "text"
+										},
+										{
+											"key": "product[status]",
+											"value": "draft",
+											"description": "(Required)  (This can only be one of draft,published)",
+											"type": "text"
+										},
+										{
+											"key": "product[category_id]",
+											"value": "3",
+											"description": "(Required) ",
+											"type": "text"
+										},
+										{
+											"key": "product[images][]",
+											"description": "(Required) ",
+											"type": "file",
+											"src": "beat.jpg"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/products.json",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products.json"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "nginx/1.18.0"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 04 Nov 2023 07:50:42 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache"
+								},
+								{
+									"key": "X-Request-Id",
+									"value": "aca3fa8b-5192-4404-8630-11db1066e639"
+								},
+								{
+									"key": "X-Runtime",
+									"value": "0.004604"
+								},
+								{
+									"key": "Strict-Transport-Security",
+									"value": "max-age=63072000; includeSubDomains"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"error\": \"Not enough or too many segments\"\n}"
+						}
+					]
+				},
+				{
+					"name": "List Products",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.equal(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Validate 'id' is a non-negative integer\", function () {\r",
+									"  const responseData = pm.response.json();\r",
+									"  \r",
+									"  pm.expect(responseData.products).to.be.an('array');\r",
+									"  responseData.products.forEach(function(product) {\r",
+									"    pm.expect(product.id).to.be.a('number').and.to.be.at.least(0);\r",
+									"  });\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/products.json?page=&category_id=&user_id=87584",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products.json"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": ""
+								},
+								{
+									"key": "category_id",
+									"value": ""
+								},
+								{
+									"key": "user_id",
+									"value": "87584"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - Product Listed",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/products.json?page=1&category_id=3&user_id=85169",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products.json"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "category_id",
+											"value": "3"
+										},
+										{
+											"key": "user_id",
+											"value": "85169"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "nginx/1.18.0"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 04 Nov 2023 16:23:00 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-Download-Options",
+									"value": "noopen"
+								},
+								{
+									"key": "X-Permitted-Cross-Domain-Policies",
+									"value": "none"
+								},
+								{
+									"key": "Referrer-Policy",
+									"value": "strict-origin-when-cross-origin"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"ad7725bf6e4dab8be7620a8c5d6d97e2\""
+								},
+								{
+									"key": "Cache-Control",
+									"value": "max-age=0, private, must-revalidate"
+								},
+								{
+									"key": "Set-Cookie",
+									"value": "_binar_playground_secondhand_marketplace_session=l8qC%2F0Lklxd0GT%2F1%2FHWPlA6H58bVf78TMHM257fdzVl4sLBi3e%2BLfde9MqE9MPaJO8cn9ZHTvldYJJIFu9D5g6TckNJ5n9Pacogb4hENZyObt2uBAxxQQviRgCJCINge19T34J4xXwFYD9%2FtCSIRE4oEOp9Zo1AzKQOLbabW7KILwJ%2F8a2eGxDp1Fx7%2FYZr0kI7I9IYGQbKv4g2SEqD27ptHMZeWaMP58qHDLO%2FrjeHfoRv06Q5UwYOqbJTXXSOcs%2Fsc1BfsYSYTLgb92GxQoGdELfnqMJ1i5AqyUnSZ2NvWfEq%2FW6j3kmwbSMrWngndAST%2Bttjr0m6mZfLr--rhVFc3yRasCXA8bE--XWfuthy9sEogEhiELpbKtQ%3D%3D; path=/; secure; HttpOnly; SameSite=Lax"
+								},
+								{
+									"key": "X-Request-Id",
+									"value": "84ce9d51-b0a6-48af-91f5-601a02039955"
+								},
+								{
+									"key": "X-Runtime",
+									"value": "0.024471"
+								},
+								{
+									"key": "Strict-Transport-Security",
+									"value": "max-age=63072000; includeSubDomains"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"page_next\": null,\n        \"page_previous\": null,\n        \"page_size\": 10,\n        \"page_count\": 1,\n        \"total\": 3\n    },\n    \"products\": [\n        {\n            \"id\": 51030,\n            \"name\": \"Bedak\",\n            \"price\": 99999,\n            \"description\": \"Jalan jalan\",\n            \"category_id\": 5,\n            \"user_id\": 85169,\n            \"created_at\": \"2023-10-29T13:32:48.506Z\",\n            \"updated_at\": \"2023-10-29T18:57:32.352Z\",\n            \"url\": \"https://secondhand.binaracademy.org/products/51030.json\",\n            \"user\": {\n                \"id\": 85169,\n                \"name\": \"Zahran S\",\n                \"email\": \"zahransyukri022@gmail.com\",\n                \"phone_number\": \"085756220184\",\n                \"address\": \"Jakal km7\",\n                \"city\": {\n                    \"id\": 2,\n                    \"name\": \"Jogja\"\n                },\n                \"avatar\": {\n                    \"filename\": \"3.PNG\",\n                    \"url\": \"/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBNFFaQXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--6c40a361c6fbbb49f7ba906081d0928dc314c7d3/3.PNG\"\n                }\n            },\n            \"images\": [\n                {\n                    \"id\": \"eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBejR1QXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--d0a65ace0d192b8d2c04fd197d654913aec602cd\",\n                    \"filename\": \"download.jpg\",\n                    \"url\": \"/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBejR1QXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--d0a65ace0d192b8d2c04fd197d654913aec602cd/download.jpg\"\n                }\n            ]\n        },\n        {\n            \"id\": 51360,\n            \"name\": \"Bedak\",\n            \"price\": 9999,\n            \"description\": \"Jalan\",\n            \"category_id\": 5,\n            \"user_id\": 85169,\n            \"created_at\": \"2023-11-01T20:09:10.460Z\",\n            \"updated_at\": \"2023-11-01T20:10:34.711Z\",\n            \"url\": \"https://secondhand.binaracademy.org/products/51360.json\",\n            \"user\": {\n                \"id\": 85169,\n                \"name\": \"Zahran S\",\n                \"email\": \"zahransyukri022@gmail.com\",\n                \"phone_number\": \"085756220184\",\n                \"address\": \"Jakal km7\",\n                \"city\": {\n                    \"id\": 2,\n                    \"name\": \"Jogja\"\n                },\n                \"avatar\": {\n                    \"filename\": \"3.PNG\",\n                    \"url\": \"/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBNFFaQXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--6c40a361c6fbbb49f7ba906081d0928dc314c7d3/3.PNG\"\n                }\n            },\n            \"images\": [\n                {\n                    \"id\": \"eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBK1kxQXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--a5590d5b884662cf1f901646127cbb2103d06065\",\n                    \"filename\": \"download.1jpg.jpg\",\n                    \"url\": \"/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBK1kxQXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--a5590d5b884662cf1f901646127cbb2103d06065/download.1jpg.jpg\"\n                }\n            ]\n        },\n        {\n            \"id\": 51445,\n            \"name\": \"motor terbang\",\n            \"price\": 9999,\n            \"description\": \"1000 cc\",\n            \"category_id\": 3,\n            \"user_id\": 85169,\n            \"created_at\": \"2023-11-04T16:22:49.053Z\",\n            \"updated_at\": \"2023-11-04T16:22:49.058Z\",\n            \"url\": \"https://secondhand.binaracademy.org/products/51445.json\",\n            \"user\": {\n                \"id\": 85169,\n                \"name\": \"Zahran S\",\n                \"email\": \"zahransyukri022@gmail.com\",\n                \"phone_number\": \"085756220184\",\n                \"address\": \"Jakal km7\",\n                \"city\": {\n                    \"id\": 2,\n                    \"name\": \"Jogja\"\n                },\n                \"avatar\": {\n                    \"filename\": \"3.PNG\",\n                    \"url\": \"/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBNFFaQXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--6c40a361c6fbbb49f7ba906081d0928dc314c7d3/3.PNG\"\n                }\n            },\n            \"images\": [\n                {\n                    \"id\": \"eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBNjA0QXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--22bbf5f7059d64961da504a212f04df833044a67\",\n                    \"filename\": \"beat.jpg\",\n                    \"url\": \"/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBNjA0QXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--22bbf5f7059d64961da504a212f04df833044a67/beat.jpg\"\n                }\n            ]\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"  pm.expect(pm.response.code).to.equal(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Price is a non-negative number\", function () {\r",
+									"  const responseData = pm.response.json();\r",
+									"  \r",
+									"  pm.expect(responseData.product).to.exist;\r",
+									"  pm.expect(responseData.product.price).to.be.a('number');\r",
+									"  pm.expect(responseData.product.price).to.be.at.least(0, \"Price should be non-negative\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"The 'images' array is present and contains at least one element\", function () {\r",
+									"  const responseData = pm.response.json();\r",
+									"  \r",
+									"  pm.expect(responseData).to.be.an('object');\r",
+									"  pm.expect(responseData.product).to.exist;\r",
+									"  pm.expect(responseData.product.images).to.exist.and.to.be.an('array');\r",
+									"  pm.expect(responseData.product.images.length).to.be.at.least(1);\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/products/51652.json",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"51652.json"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - Product Retrieved",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/products/51438.json",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products",
+										"51438.json"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "nginx/1.18.0"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 04 Nov 2023 08:03:08 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-Download-Options",
+									"value": "noopen"
+								},
+								{
+									"key": "X-Permitted-Cross-Domain-Policies",
+									"value": "none"
+								},
+								{
+									"key": "Referrer-Policy",
+									"value": "strict-origin-when-cross-origin"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"05a0c46bcbc6f6e0ed2e06e0b8050a1a\""
+								},
+								{
+									"key": "Cache-Control",
+									"value": "max-age=0, private, must-revalidate"
+								},
+								{
+									"key": "Set-Cookie",
+									"value": "_binar_playground_secondhand_marketplace_session=VuPnjYqpMBvxV2VfpRVN9tmENSrageOlNVmOPQ8p8fHlpPoEvepBz%2Fn4xW8MR9lqDXWjcgrmZDUX8QKN2JoTyp%2FRZLutsffmk48KxbzSLytf7fX7xaJOk0zpZBT8qvixkxTXwlc5zCeU2rMrfxFqpwAFZJIBvEI45M2%2F%2Fe4WkTRGQmaN8Wr8OdL9o8wWSaQTLXWvTgwsQCcH%2BkExFeIKvSuIz1WzcMypkY%2B073WRKx961n0otR8HSHsm3%2BeMxiPckeWE2J4jZMuUqSGuhSi1DjPaKuAdu0nq1o3bcFYXVo1BcC6g7me3bvTcsskwlDv1STFdvQ6UvJmGiJP2--RdjH99he6GK1kSIV--Egq30iCWvHLP0ynwknTmkQ%3D%3D; path=/; secure; HttpOnly; SameSite=Lax"
+								},
+								{
+									"key": "X-Request-Id",
+									"value": "0b8881de-c7f6-4af3-a860-6a4195b37438"
+								},
+								{
+									"key": "X-Runtime",
+									"value": "0.017760"
+								},
+								{
+									"key": "Strict-Transport-Security",
+									"value": "max-age=63072000; includeSubDomains"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"product\": {\n        \"id\": 51438,\n        \"name\": \"Honda Beat\",\n        \"price\": 200000,\n        \"description\": \"Honda beat bisa terbang\",\n        \"category_id\": 3,\n        \"user_id\": 87281,\n        \"created_at\": \"2023-11-04T07:49:14.185Z\",\n        \"updated_at\": \"2023-11-04T07:49:14.190Z\",\n        \"url\": \"https://secondhand.binaracademy.org/products/51438.json\",\n        \"user\": {\n            \"id\": 87281,\n            \"name\": \"Zahran\",\n            \"email\": \"zahransyukri02@gmail.com\",\n            \"phone_number\": \"081908001755\",\n            \"address\": \"Jalan jalan\",\n            \"avatar\": {\n                \"filename\": \"images (1).jpg\",\n                \"url\": \"/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBeTg0QXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--756e3e5d68a33472f49665751a80edee257e5309/images%20(1).jpg\"\n            }\n        },\n        \"images\": [\n            {\n                \"id\": \"eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBekU0QXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--c6e5701aef31eda60f0814cd5739ed9aed6add3d\",\n                \"filename\": \"beat.jpg\",\n                \"url\": \"/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBekU0QXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--c6e5701aef31eda60f0814cd5739ed9aed6add3d/beat.jpg\"\n            }\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Update Product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Name is a non-empty string\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData.product.name).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Name should not be empty\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Price is a non-negative number\", function () {\r",
+									"  const responseData = pm.response.json();\r",
+									"  \r",
+									"  pm.expect(responseData.product.price).to.be.a('number');\r",
+									"  pm.expect(responseData.product.price).to.be.at.least(0);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Description is a non-empty string\", function () {\r",
+									"  const responseData = pm.response.json();\r",
+									"\r",
+									"  pm.expect(responseData.product.description).to.exist.and.to.be.a('string').and.to.have.lengthOf.at.least(1, \"Value should not be empty\");\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "product[name]",
+									"value": "{{random_computer_product_name}}",
+									"type": "text"
+								},
+								{
+									"key": "product[price]",
+									"value": "{{random_product_price}}",
+									"type": "text"
+								},
+								{
+									"key": "product[description]",
+									"value": "{{random_product_description}}",
+									"type": "text"
+								},
+								{
+									"key": "product[status]",
+									"value": "published",
+									"description": " (This can only be one of draft,published)",
+									"type": "text"
+								},
+								{
+									"key": "product[category_id]",
+									"value": "3",
+									"type": "text"
+								},
+								{
+									"key": "product[images][]",
+									"type": "file",
+									"src": "barang-elektronik_20180823_121413.jpg"
+								},
+								{
+									"key": "product[persisted_images][]",
+									"type": "file",
+									"src": "barang-elektronik_20180823_121413.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/products/51659.json",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"51659.json"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - Product Updated",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "multipart/form-data",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "product[name]",
+											"value": "Beat 500cc",
+											"type": "text"
+										},
+										{
+											"key": "product[price]",
+											"value": "1500000",
+											"type": "text"
+										},
+										{
+											"key": "product[description]",
+											"value": "Beat terbang",
+											"type": "text"
+										},
+										{
+											"key": "product[status]",
+											"value": "published",
+											"description": " (This can only be one of draft,published)",
+											"type": "text"
+										},
+										{
+											"key": "product[category_id]",
+											"value": "3",
+											"type": "text"
+										},
+										{
+											"key": "product[images][]",
+											"type": "file",
+											"src": "beat.jpg"
+										},
+										{
+											"key": "product[persisted_images][]",
+											"type": "file",
+											"src": "beat.jpg"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/products/51438.json",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products",
+										"51438.json"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "nginx/1.18.0"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 04 Nov 2023 08:08:01 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-Download-Options",
+									"value": "noopen"
+								},
+								{
+									"key": "X-Permitted-Cross-Domain-Policies",
+									"value": "none"
+								},
+								{
+									"key": "Referrer-Policy",
+									"value": "strict-origin-when-cross-origin"
+								},
+								{
+									"key": "Location",
+									"value": "https://secondhand.binaracademy.org/products/51438"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"fcba116d353df33b141ab9f554dffa97\""
+								},
+								{
+									"key": "Cache-Control",
+									"value": "max-age=0, private, must-revalidate"
+								},
+								{
+									"key": "Set-Cookie",
+									"value": "_binar_playground_secondhand_marketplace_session=xaHCl8GgpGMU2t4AEekkYCyRCtueaESQCllqaL2rcJfnC0aExaPUGIu8x%2FsaiIoXhmVeEoPCCfWIIktOfSx53SBAKPLejX%2BumuZ59tgPdfajmTG2oBqxVWfbZBp1Dm8G5osrK1bhypewHYnSep4y2fGMt02ATnZqZvhxW8aDMDz%2BLDbJxEnrDHsQv4lka4MP7FsdSlYi9sYdUiOeDLQMHZvAvMt4lk3BI9YqASTKDuZyZ4uwPNFn3UF%2FJa1j3HY%2B%2FxFfDOakqYZ5aTA2bTuoWDU03IPfvOSv3LU%2B8skqje08XcXXjwUbwaZHlBAmmXY60vgggPeABn2UenbO--ZE6piSIYH%2FlNJFKN--mu6O87pa5NhgN8c2pLaEYg%3D%3D; path=/; secure; HttpOnly; SameSite=Lax"
+								},
+								{
+									"key": "X-Request-Id",
+									"value": "7e81ee61-4272-436c-987a-0564f4a42109"
+								},
+								{
+									"key": "X-Runtime",
+									"value": "0.329218"
+								},
+								{
+									"key": "Strict-Transport-Security",
+									"value": "max-age=63072000; includeSubDomains"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"product\": {\n        \"id\": 51438,\n        \"name\": \"Beat 500cc\",\n        \"price\": 1500000,\n        \"description\": \"Beat terbang\",\n        \"category_id\": 3,\n        \"user_id\": 87281,\n        \"created_at\": \"2023-11-04T07:49:14.185Z\",\n        \"updated_at\": \"2023-11-04T08:08:01.521Z\",\n        \"url\": \"https://secondhand.binaracademy.org/products/51438.json\",\n        \"user\": {\n            \"id\": 87281,\n            \"name\": \"Zahran\",\n            \"email\": \"zahransyukri02@gmail.com\",\n            \"phone_number\": \"081908001755\",\n            \"address\": \"Jalan jalan\",\n            \"avatar\": {\n                \"filename\": \"images (1).jpg\",\n                \"url\": \"/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBeTg0QXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--756e3e5d68a33472f49665751a80edee257e5309/images%20(1).jpg\"\n            }\n        },\n        \"images\": [\n            {\n                \"id\": \"eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBek00QXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--4b325728b7c25f40cc640354a77b68f1e00544e6\",\n                \"filename\": \"beat.jpg\",\n                \"url\": \"/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBek00QXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--4b325728b7c25f40cc640354a77b68f1e00544e6/beat.jpg\"\n            }\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete Product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products/{{id_product}}.json",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"{{id_product}}.json"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - Product Deleted",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/products/51446.json",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products",
+										"51446.json"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "html",
+							"header": [
+								{
+									"key": "Server",
+									"value": "nginx/1.18.0"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 04 Nov 2023 16:29:20 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "text/html; charset=utf-8"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-Download-Options",
+									"value": "noopen"
+								},
+								{
+									"key": "X-Permitted-Cross-Domain-Policies",
+									"value": "none"
+								},
+								{
+									"key": "Referrer-Policy",
+									"value": "strict-origin-when-cross-origin"
+								},
+								{
+									"key": "Link",
+									"value": "</assets/application-8719702cfbda8df80ef05ec97d6e3439f691b635cf6f90772d44af13d07cdc5f.css>; rel=preload; as=style; nopush"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept, Origin"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"b7275ec50ac4665fb7ea68891417656a\""
+								},
+								{
+									"key": "Cache-Control",
+									"value": "max-age=0, private, must-revalidate"
+								},
+								{
+									"key": "Set-Cookie",
+									"value": "_binar_playground_secondhand_marketplace_session=6lF0cJLvrPAA23FyqkMzTTLUNvopNO9d%2FGVzlacpg7MBZ9K9Opai0gTF%2F3dbjhI2qCTVNZ1ZxPKCoJI%2BHCqgUM15HvClxvKXYpzplNuDqPLJ96qqRvE7wlCBcrTsqhxWxbd8bKooN%2B0T%2FvScqIcFFcQpniRASIvtTKo2o%2FKX2fKP4Y8ldX5xUFahVVCJ4co%2Fr6nihmuwR%2FouDFeLzSxUPjnUTE0IKD3ofpjsFuFmHEkYPGXMAmAdT5IZRMiBQRk3LRJ5PScNp0K8ZnmjYzNenjLn%2Fbmr2pB2FAfdRmv1fX%2FRhyDFnQKTo0Vt7yXjIPJckMLvdbZI1FVTTW7P6tezkHaKrelE6jsdZxS4fx4hTV6ws5%2Fj%2BXt8vE%2FhOKeRu3t9DuYTcRyk0hPeVdVb1aKHdoFPUo8ItHzufbfX6S1YuaUJ%2B8MnQ%2Bfh1imSqY8%3D--KVl89UyDjq0lg%2FNq--CLDmgqr1RPYXCklh0CR0TA%3D%3D; path=/; secure; HttpOnly; SameSite=Lax"
+								},
+								{
+									"key": "X-Request-Id",
+									"value": "0f204617-49ef-4f86-9692-c450912eb8fb"
+								},
+								{
+									"key": "X-Runtime",
+									"value": "0.136129"
+								},
+								{
+									"key": "Strict-Transport-Security",
+									"value": "max-age=63072000; includeSubDomains"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "gzip"
+								}
+							],
+							"cookie": [],
+							"body": "<!DOCTYPE html>\n<html>\n    <head>\n        <title>SecondHand</title>\n        <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n        <meta name=\"csrf-param\" content=\"authenticity_token\" />\n        <meta name=\"csrf-token\" content=\"8umM97A2cnAQZSIUSc_kZ6d-tXH-RH9kYmB3XEfYHqfXWTUPkCtULkKk72LLlYWFC6ntxIeD4lWST8_V9_oKzw\" />\n        <link rel=\"stylesheet\" href=\"/assets/application-8719702cfbda8df80ef05ec97d6e3439f691b635cf6f90772d44af13d07cdc5f.css\" media=\"all\" data-turbo-track=\"reload\" />\n        <script src=\"/assets/application-129503345137b5d28c19109dabc42b97ed2206ca1c50e66a68eac5b5353990e4.js\" data-turbo-track=\"reload\" defer=\"defer\"></script>\n    </head>\n    <body>\n        <nav class=\"navbar navbar-expand-lg navbar-light bg-white shadow fixed-top\">\n            <div class=\"container\">\n                <a class=\"navbar-brand px-5 py-3\" href=\"/\"></a>\n                <button class=\"navbar-toggler\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#navbarSupportedContent\" aria-controls=\"navbarSupportedContent\" aria-expanded=\"false\" aria-label=\"Toggle navigation\">\n                    <span class=\"navbar-toggler-icon\"></span>\n                </button>\n                <div class=\"collapse navbar-collapse\" id=\"navbarSupportedContent\">\n                    <form class=\"d-flex ms-0 ms-lg-4 my-4 my-lg-0\" method=\"GET\" action=\"/\" role=\"search\">\n                        <div class=\"input-group rounded-pill bg-light p-1 search\">\n                            <input name=\"q\" class=\"form-control bg-transparent border-0 form-search\" type=\"search\" placeholder=\"Cari di sini ...\" aria-label=\"Search\" value=\"\">\n                            <i class=\"bi bi-search input-group-text bg-transparent border-0\"></i>\n                        </div>\n                    </form>\n                    <div class=\"ms-auto\">\n                        <ul class=\"navbar-nav\">\n                            <li class=\"nav-item me-0 me-lg-2 fs-5\" aria-current=\"page\">\n                                <a class=\"nav-link d-flex align-items-center \" href=\"/products\">\n                                    <i class=\"bi bi-list-ul me-4 me-lg-0\"></i>\n                                    <span class=\"d-block d-lg-none fs-6\">Produk Saya</span>\n                                </a>\n                            </li>\n                            <li class=\"nav-item me-0 me-lg-2 fs-5 d-block d-xl-none position-relative\">\n                                <a class=\"nav-link d-flex align-items-center\" href=\"/notifications\">\n                                    <i class=\"bi bi-bell me-4 me-lg-0\"></i>\n                                    <span class=\"d-block d-lg-none fs-6\">Notifikasi</span>\n                                    <span class=\"position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle\">\n                                        <span class=\"visually-hidden\">New alerts</span>\n                                    </span>\n                                </a>\n                            </li>\n                            <li class=\"nav-item dropdown me-0 me-lg-2 fs-5 d-none d-xl-block position-relative\">\n                                <a class=\"nav-link dropdown-toggle position-relative\" href=\"#\" role=\"button\" data-bs-toggle=\"dropdown\">\n                                    <i class=\"bi bi-bell\"></i>\n                                    <span class=\"position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle\">\n                                        <span class=\"visually-hidden\">New alerts</span>\n                                    </span>\n                                </a>\n                                <ul class=\"dropdown-menu notification-dropdown-menu px-4\">\n                                    <li>\n                                        <a class=\"notification my-4 px-2 position-relative\" data-notification-id=\"84625\" data-notification-read=\"false\" href=\"/products/51449\">\n                                            <img class=\"notification-image rounded-4 overflow-hidden me-4\" src=\"https://secondhand.binaracademy.org/rails/active_storage/representations/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBN0U0QXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--04c3d63e9d75a29c8e89f556d2f855101fdac64a/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCem9MWm05eWJXRjBTU0lJYW5CbkJqb0dSVlE2RkhKbGMybDZaVjkwYjE5c2FXMXBkRnNIYVFHQWFRR0EiLCJleHAiOm51bGwsInB1ciI6InZhcmlhdGlvbiJ9fQ==--f818892d4e54f518060ffc124f73e0f075cd27ce/beat.jpg\" />\n                                            <div class=\"notification-body me-4\">\n                                                <div class=\"notification-subject fs-6 text-black-50\">Berhasil di terbitkan</div>\n                                                <div class=\"notification-body fs-5\">sepeda terbang\n                                                    <br>Rp 750.000\n                                                </div>\n                                            </div>\n                                            <div class=\"notification-timestamp fs-6 text-black-50\">04 Nov, 23:25</div>\n                                            <span class=\"position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle\">\n                                                <span class=\"visually-hidden\">New alerts</span>\n                                            </span>\n                                        </a>\n                                    </li>\n                                    <li>\n                                        <hr class=\"dropdown-divider\">\n                                    </li>\n                                    <li>\n                                        <a class=\"notification my-4 px-2 position-relative\" data-notification-id=\"84624\" data-notification-read=\"false\" href=\"/products/51448\">\n                                            <img class=\"notification-image rounded-4 overflow-hidden me-4\" src=\"https://secondhand.binaracademy.org/rails/active_storage/representations/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBN0E0QXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--f2efa13853de092ee692f92d6e97eafaf189f83d/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCem9MWm05eWJXRjBTU0lJYW5CbkJqb0dSVlE2RkhKbGMybDZaVjkwYjE5c2FXMXBkRnNIYVFHQWFRR0EiLCJleHAiOm51bGwsInB1ciI6InZhcmlhdGlvbiJ9fQ==--f818892d4e54f518060ffc124f73e0f075cd27ce/beat.jpg\" />\n                                            <div class=\"notification-body me-4\">\n                                                <div class=\"notification-subject fs-6 text-black-50\">Berhasil di terbitkan</div>\n                                                <div class=\"notification-body fs-5\">sepeda terbang\n                                                    <br>Rp 750.000\n                                                </div>\n                                            </div>\n                                            <div class=\"notification-timestamp fs-6 text-black-50\">04 Nov, 23:25</div>\n                                            <span class=\"position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle\">\n                                                <span class=\"visually-hidden\">New alerts</span>\n                                            </span>\n                                        </a>\n                                    </li>\n                                    <li>\n                                        <hr class=\"dropdown-divider\">\n                                    </li>\n                                    <li>\n                                        <a class=\"notification my-4 px-2 position-relative\" data-notification-id=\"84623\" data-notification-read=\"false\" href=\"/products/51447\">\n                                            <img class=\"notification-image rounded-4 overflow-hidden me-4\" src=\"https://secondhand.binaracademy.org/rails/active_storage/representations/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBNjg0QXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--9bdbf0a91ae4c501186cd4ad0d9fd8fbfa54a8a5/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCem9MWm05eWJXRjBTU0lJYW5CbkJqb0dSVlE2RkhKbGMybDZaVjkwYjE5c2FXMXBkRnNIYVFHQWFRR0EiLCJleHAiOm51bGwsInB1ciI6InZhcmlhdGlvbiJ9fQ==--f818892d4e54f518060ffc124f73e0f075cd27ce/beat.jpg\" />\n                                            <div class=\"notification-body me-4\">\n                                                <div class=\"notification-subject fs-6 text-black-50\">Berhasil di terbitkan</div>\n                                                <div class=\"notification-body fs-5\">sepeda terbang\n                                                    <br>Rp 750.000\n                                                </div>\n                                            </div>\n                                            <div class=\"notification-timestamp fs-6 text-black-50\">04 Nov, 23:25</div>\n                                            <span class=\"position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle\">\n                                                <span class=\"visually-hidden\">New alerts</span>\n                                            </span>\n                                        </a>\n                                    </li>\n                                    <li>\n                                        <hr class=\"dropdown-divider\">\n                                    </li>\n                                    <li>\n                                        <a class=\"notification my-4 px-2 position-relative\" data-notification-id=\"84622\" data-notification-read=\"false\" href=\"/products/51446\">\n                                            <img class=\"notification-image rounded-4 overflow-hidden me-4\" src=\"https://secondhand.binaracademy.org/rails/active_storage/representations/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBNjQ0QXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--46315fb127ec8275fa2ee15e0abdd5ca8e7b6012/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCem9MWm05eWJXRjBTU0lJYW5CbkJqb0dSVlE2RkhKbGMybDZaVjkwYjE5c2FXMXBkRnNIYVFHQWFRR0EiLCJleHAiOm51bGwsInB1ciI6InZhcmlhdGlvbiJ9fQ==--f818892d4e54f518060ffc124f73e0f075cd27ce/beat.jpg\" />\n                                            <div class=\"notification-body me-4\">\n                                                <div class=\"notification-subject fs-6 text-black-50\">Berhasil di terbitkan</div>\n                                                <div class=\"notification-body fs-5\">sepeda terbang\n                                                    <br>Rp 750.000\n                                                </div>\n                                            </div>\n                                            <div class=\"notification-timestamp fs-6 text-black-50\">04 Nov, 23:24</div>\n                                            <span class=\"position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle\">\n                                                <span class=\"visually-hidden\">New alerts</span>\n                                            </span>\n                                        </a>\n                                    </li>\n                                    <li>\n                                        <hr class=\"dropdown-divider\">\n                                    </li>\n                                    <li>\n                                        <a class=\"notification my-4 px-2 position-relative\" data-notification-id=\"84621\" data-notification-read=\"false\" href=\"/products/51445\">\n                                            <img class=\"notification-image rounded-4 overflow-hidden me-4\" src=\"https://secondhand.binaracademy.org/rails/active_storage/representations/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBNjA0QXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--22bbf5f7059d64961da504a212f04df833044a67/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCem9MWm05eWJXRjBTU0lJYW5CbkJqb0dSVlE2RkhKbGMybDZaVjkwYjE5c2FXMXBkRnNIYVFHQWFRR0EiLCJleHAiOm51bGwsInB1ciI6InZhcmlhdGlvbiJ9fQ==--f818892d4e54f518060ffc124f73e0f075cd27ce/beat.jpg\" />\n                                            <div class=\"notification-body me-4\">\n                                                <div class=\"notification-subject fs-6 text-black-50\">Berhasil di terbitkan</div>\n                                                <div class=\"notification-body fs-5\">motor terbang\n                                                    <br>Rp 9.999\n                                                </div>\n                                            </div>\n                                            <div class=\"notification-timestamp fs-6 text-black-50\">04 Nov, 23:22</div>\n                                            <span class=\"position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle\">\n                                                <span class=\"visually-hidden\">New alerts</span>\n                                            </span>\n                                        </a>\n                                    </li>\n                                    <li>\n                                        <hr class=\"dropdown-divider\">\n                                    </li>\n                                    <li>\n                                        <a class=\"notification my-4 px-2 position-relative\" data-notification-id=\"84620\" data-notification-read=\"true\" href=\"/users/87281/offers\">\n                                            <img class=\"notification-image rounded-4 overflow-hidden me-4\" src=\"https://secondhand.binaracademy.org/rails/active_storage/representations/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBK1kxQXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--a5590d5b884662cf1f901646127cbb2103d06065/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCem9MWm05eWJXRjBTU0lJYW5CbkJqb0dSVlE2RkhKbGMybDZaVjkwYjE5c2FXMXBkRnNIYVFHQWFRR0EiLCJleHAiOm51bGwsInB1ciI6InZhcmlhdGlvbiJ9fQ==--f818892d4e54f518060ffc124f73e0f075cd27ce/download.1jpg.jpg\" />\n                                            <div class=\"notification-body me-4\">\n                                                <div class=\"notification-subject fs-6 text-black-50\">Penawaran produk</div>\n                                                <div class=\"notification-body fs-5\">Bedak\n                                                    <br>Rp 9.999\n                                                    <br>Ditawar Rp 878\n                                                </div>\n                                            </div>\n                                            <div class=\"notification-timestamp fs-6 text-black-50\">04 Nov, 23:09</div>\n                                        </a>\n                                    </li>\n                                    <li>\n                                        <hr class=\"dropdown-divider\">\n                                    </li>\n                                    <li>\n                                        <a class=\"notification my-4 px-2 position-relative\" data-notification-id=\"84618\" data-notification-read=\"true\" href=\"/users/85169/offers\">\n                                            <img class=\"notification-image rounded-4 overflow-hidden me-4\" src=\"https://secondhand.binaracademy.org/rails/active_storage/representations/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBK1kxQXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--a5590d5b884662cf1f901646127cbb2103d06065/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCem9MWm05eWJXRjBTU0lJYW5CbkJqb0dSVlE2RkhKbGMybDZaVjkwYjE5c2FXMXBkRnNIYVFHQWFRR0EiLCJleHAiOm51bGwsInB1ciI6InZhcmlhdGlvbiJ9fQ==--f818892d4e54f518060ffc124f73e0f075cd27ce/download.1jpg.jpg\" />\n                                            <div class=\"notification-body me-4\">\n                                                <div class=\"notification-subject fs-6 text-black-50\">Penawaran produk</div>\n                                                <div class=\"notification-body fs-5\">Bedak\n                                                    <br>Rp 9.999\n                                                    <br>Ditawar Rp 22\n                                                </div>\n                                            </div>\n                                            <div class=\"notification-timestamp fs-6 text-black-50\">04 Nov, 22:56</div>\n                                        </a>\n                                    </li>\n                                    <li>\n                                        <hr class=\"dropdown-divider\">\n                                    </li>\n                                    <li>\n                                        <a class=\"notification my-4 px-2 position-relative\" data-notification-id=\"84617\" data-notification-read=\"false\" href=\"/users/85169/offers\">\n                                            <img class=\"notification-image rounded-4 overflow-hidden me-4\" src=\"https://secondhand.binaracademy.org/rails/active_storage/representations/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBK1kxQXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--a5590d5b884662cf1f901646127cbb2103d06065/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCem9MWm05eWJXRjBTU0lJYW5CbkJqb0dSVlE2RkhKbGMybDZaVjkwYjE5c2FXMXBkRnNIYVFHQWFRR0EiLCJleHAiOm51bGwsInB1ciI6InZhcmlhdGlvbiJ9fQ==--f818892d4e54f518060ffc124f73e0f075cd27ce/download.1jpg.jpg\" />\n                                            <div class=\"notification-body me-4\">\n                                                <div class=\"notification-subject fs-6 text-black-50\">Penawaran produk</div>\n                                                <div class=\"notification-body fs-5\">Bedak\n                                                    <br>Rp 9.999\n                                                    <br>Ditawar Rp 777\n                                                </div>\n                                            </div>\n                                            <div class=\"notification-timestamp fs-6 text-black-50\">04 Nov, 22:55</div>\n                                            <span class=\"position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle\">\n                                                <span class=\"visually-hidden\">New alerts</span>\n                                            </span>\n                                        </a>\n                                    </li>\n                                    <li>\n                                        <hr class=\"dropdown-divider\">\n                                    </li>\n                                    <li>\n                                        <a class=\"notification my-4 px-2 position-relative\" data-notification-id=\"84612\" data-notification-read=\"true\" href=\"/users/87310/offers\">\n                                            <img class=\"notification-image rounded-4 overflow-hidden me-4\" src=\"https://secondhand.binaracademy.org/rails/active_storage/representations/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBK1kxQXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--a5590d5b884662cf1f901646127cbb2103d06065/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCem9MWm05eWJXRjBTU0lJYW5CbkJqb0dSVlE2RkhKbGMybDZaVjkwYjE5c2FXMXBkRnNIYVFHQWFRR0EiLCJleHAiOm51bGwsInB1ciI6InZhcmlhdGlvbiJ9fQ==--f818892d4e54f518060ffc124f73e0f075cd27ce/download.1jpg.jpg\" />\n                                            <div class=\"notification-body me-4\">\n                                                <div class=\"notification-subject fs-6 text-black-50\">Penawaran produk</div>\n                                                <div class=\"notification-body fs-5\">Bedak\n                                                    <br>Rp 9.999\n                                                    <br>Ditawar Rp 10.000\n                                                </div>\n                                            </div>\n                                            <div class=\"notification-timestamp fs-6 text-black-50\">04 Nov, 22:04</div>\n                                        </a>\n                                    </li>\n                                    <li>\n                                        <hr class=\"dropdown-divider\">\n                                    </li>\n                                    <li>\n                                        <a class=\"notification my-4 px-2 position-relative\" data-notification-id=\"84611\" data-notification-read=\"false\" href=\"/users/87310/offers\">\n                                            <img class=\"notification-image rounded-4 overflow-hidden me-4\" src=\"https://secondhand.binaracademy.org/rails/active_storage/representations/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBK1kxQXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--a5590d5b884662cf1f901646127cbb2103d06065/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCem9MWm05eWJXRjBTU0lJYW5CbkJqb0dSVlE2RkhKbGMybDZaVjkwYjE5c2FXMXBkRnNIYVFHQWFRR0EiLCJleHAiOm51bGwsInB1ciI6InZhcmlhdGlvbiJ9fQ==--f818892d4e54f518060ffc124f73e0f075cd27ce/download.1jpg.jpg\" />\n                                            <div class=\"notification-body me-4\">\n                                                <div class=\"notification-subject fs-6 text-black-50\">Penawaran produk</div>\n                                                <div class=\"notification-body fs-5\">Bedak\n                                                    <br>Rp 9.999\n                                                    <br>Ditawar Rp 5.555\n                                                </div>\n                                            </div>\n                                            <div class=\"notification-timestamp fs-6 text-black-50\">04 Nov, 22:02</div>\n                                            <span class=\"position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle\">\n                                                <span class=\"visually-hidden\">New alerts</span>\n                                            </span>\n                                        </a>\n                                    </li>\n                                    <li class=\"p-2 text-center\">\n                                        <a class=\"btn btn-link text-decoration-none\" href=\"/notifications\">\n                Lihat semua notifikasi\n</a>\n                                    </li>\n                                </ul>\n                            </li>\n                            <li class=\"nav-item fs-5 d-block d-lg-none\">\n                                <a class=\"nav-link d-flex align-items-center\" href=\"/profiles\">\n                                    <i class=\"bi bi-person me-4 me-lg-0\"></i>\n                                    <span class=\"d-block d-lg-none fs-6\">Profil Saya</span>\n                                </a>\n                            </li>\n                            <li class=\"nav-item fs-5 d-block d-lg-none\">\n                                <form action=\"/users/sign_out\" accept-charset=\"UTF-8\" method=\"post\">\n                                    <input type=\"hidden\" name=\"_method\" value=\"delete\" autocomplete=\"off\" />\n                                    <input type=\"hidden\" name=\"authenticity_token\" value=\"4_AOukvHcRBsJlRAUT4123eEkzrp4cOZVHOV1lU13baM9TF7qeczlTLs13jLhwWByh4VxCnDCUhIaKM0zJCHzg\" autocomplete=\"off\" />\n                                    <button name=\"button\" type=\"submit\" class=\"nav-link btn btn-link btn-sm text-decoration-none fs-5 logout-button\">\n                                        <i class=\"bi bi-arrow-bar-left me-3\"></i>\n                                        <span class=\"fs-6\">Keluar</span>\n                                    </button>\n                                </form>\n                            </li>\n                            <li class=\"nav-item dropdown fs-5 d-none d-lg-block\">\n                                <a class=\"nav-link dropdown-toggle d-flex align-items-center\" href=\"#\" role=\"button\" data-bs-toggle=\"dropdown\">\n                                    <i class=\"bi bi-person me-4 me-lg-0\"></i>\n                                    <span class=\"d-block d-lg-none fs-6\">Profil Saya</span>\n                                </a>\n                                <ul class=\"dropdown-menu\">\n                                    <li>\n                                        <a class=\"nav-user\" href=\"/profiles\">\n                                            <div class=\"d-flex align-items-center justify-content center flex-column py-2\">\n                                                <img class=\"img-avatar w-100 rounded-4 mb-2\" src=\"https://secondhand.binaracademy.org/rails/active_storage/representations/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBNFFaQXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--6c40a361c6fbbb49f7ba906081d0928dc314c7d3/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCem9MWm05eWJXRjBTU0lJVUU1SEJqb0dSVlE2RkhKbGMybDZaVjkwYjE5c2FXMXBkRnNIYVFLUUFXa0NrQUU9IiwiZXhwIjpudWxsLCJwdXIiOiJ2YXJpYXRpb24ifX0=--e685f91d63ea3cd7a5777e41e1d7fdb6a7559248/3.PNG\" />\n                                                <div class=\"card-body text-center\">\n                                                    <div class=\"fs-5 fw-bold\">Zahran</div>\n                                                    <div class=\"fs-6 text-black-50\">Jogja</div>\n                                                </div>\n                                            </div>\n                                        </a>\n                                    </li>\n                                    <li>\n                                        <hr class=\"dropdown-divider\">\n                                    </li>\n                                    <li>\n                                        <form action=\"/users/sign_out\" accept-charset=\"UTF-8\" method=\"post\">\n                                            <input type=\"hidden\" name=\"_method\" value=\"delete\" autocomplete=\"off\" />\n                                            <input type=\"hidden\" name=\"authenticity_token\" value=\"uoMoCtx36MPFHEUMuYPtQXizvCzMY0x-njkQziOIKkTVhhfLPleqRpvWxjQjOt0bxSk60gxBhq-CIiYsui1wPA\" autocomplete=\"off\" />\n                                            <button name=\"button\" type=\"submit\" class=\"btn btn-link text-decoration-none\">\n                                                <i class=\"bi bi-arrow-bar-left me-3\"></i>\n            Keluar\n                                            </button>\n                                        </form>\n                                    </li>\n                                </ul>\n                            </li>\n                        </ul>\n                        <!-- TODO: Move this somewhere convinient -->\n                        <script>\n  var notifications = document.querySelectorAll(\"a.notification\")\n\n  notifications.forEach((notification) => {\n    if (notification.dataset.notificationRead == \"false\") {\n      notification.addEventListener('click', async function () {\n        await fetch(`/notifications/${notification.dataset.notificationId}/read`, {\n          credentials: \"same-origin\",\n          method: \"PUT\"\n        });\n      });\n    }\n  })\n</script>\n                    </div>\n                </div>\n            </div>\n        </nav>\n        <section class=\"pt-5 mt-5\">\n            <section class=\"mt-lg-5 mb-5 w-100 d-flex gap-lg-5\">\n                <div class=\"promo left bg-success rounded-end flex-grow-1 align-self-center d-none d-lg-block\"></div>\n                <div class=\"promo center flex-grow-1 bg-warning rounded-lg-4 rounded-0\">\n                    <div class=\"row p-5\">\n                        <div class=\"col\">\n                            <h1 class=\"fw-bold mb-4\">Bulan Ramadhan\n                                <br>Banyak diskon!\n                            </h1>\n                            <h6 class=\"fs-5 fw-normal\" >Diskon Hingga</h6>\n                            <h5 class=\"display-6 text-danger fw-bold\">60%</h5>\n                        </div>\n                        <div class=\"col\">\n      </div>\n                    </div>\n                </div>\n                <div class=\"promo right bg-info rounded-start flex-grow-1 align-self-center d-none d-lg-block\"></div>\n            </section>\n            <section class=\"container\">\n                <h5 class=\"fw-bold mb-4\">Telusuri Kategori</h5>\n                <nav class=\"nav row gap-4 px-2 px-lg-0\">\n                    <a class=\"btn btn-alt-primary col rounded-4 py-2 px-4 d-inline-flex align-items-center active\" href=\"/\">\n                        <i class=\"bi bi-search me-3 fs-4\"></i>\n      Semua\n                    </a>\n                    <a class=\"btn btn-alt-primary col rounded-4 py-2 px-4 d-inline-flex align-items-center false\" href=\"/?category_id=1\">\n                        <i class=\"bi bi-search me-3 fs-4\"></i>\n        Hobi\n                    </a>\n                    <a class=\"btn btn-alt-primary col rounded-4 py-2 px-4 d-inline-flex align-items-center false\" href=\"/?category_id=2\">\n                        <i class=\"bi bi-search me-3 fs-4\"></i>\n        Kendaraan\n                    </a>\n                    <a class=\"btn btn-alt-primary col rounded-4 py-2 px-4 d-inline-flex align-items-center false\" href=\"/?category_id=3\">\n                        <i class=\"bi bi-search me-3 fs-4\"></i>\n        Baju\n                    </a>\n                    <a class=\"btn btn-alt-primary col rounded-4 py-2 px-4 d-inline-flex align-items-center false\" href=\"/?category_id=4\">\n                        <i class=\"bi bi-search me-3 fs-4\"></i>\n        Elektronik\n                    </a>\n                    <a class=\"btn btn-alt-primary col rounded-4 py-2 px-4 d-inline-flex align-items-center false\" href=\"/?category_id=5\">\n                        <i class=\"bi bi-search me-3 fs-4\"></i>\n        Kesehatan\n                    </a>\n                </nav>\n                <div class=\"row my-5 g-5\" id='products'>\n                    <div class=\"col-12 col-md-4 col-lg-3\">\n                        <a class=\"product-card\" href=\"/products/51449\">\n                            <div class=\"card px-0 border-0 shadow h-100 pb-4 rounded-4\">\n                                <img class=\"card-img img-product-thumbnail p-3 rounded-4 overflow-hidden\" src=\"https://secondhand.binaracademy.org/rails/active_storage/representations/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBN0U0QXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--04c3d63e9d75a29c8e89f556d2f855101fdac64a/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCem9MWm05eWJXRjBTU0lJYW5CbkJqb0dSVlE2RkhKbGMybDZaVjkwYjE5c2FXMXBkRnNIYVFJQUFXa0NBQUU9IiwiZXhwIjpudWxsLCJwdXIiOiJ2YXJpYXRpb24ifX0=--b50863606d6ba2f597650ed7335384ba20cf4712/beat.jpg\" />\n                                <div class=\"card-body text-decoration-none\">\n                                    <h5 class=\"card-title\">sepeda terbang</h5>\n                                    <p class=\"card-text text-black-50 text-small\">Baju</p>\n                                    <h5 class=\"card-text\">Rp 750.000</h5>\n                                </div>\n                            </div>\n                        </a>\n                    </div>\n                    <div class=\"col-12 col-md-4 col-lg-3\">\n                        <a class=\"product-card\" href=\"/products/51447\">\n                            <div class=\"card px-0 border-0 shadow h-100 pb-4 rounded-4\">\n                                <img class=\"card-img img-product-thumbnail p-3 rounded-4 overflow-hidden\" src=\"https://secondhand.binaracademy.org/rails/active_storage/representations/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBNjg0QXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--9bdbf0a91ae4c501186cd4ad0d9fd8fbfa54a8a5/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCem9MWm05eWJXRjBTU0lJYW5CbkJqb0dSVlE2RkhKbGMybDZaVjkwYjE5c2FXMXBkRnNIYVFJQUFXa0NBQUU9IiwiZXhwIjpudWxsLCJwdXIiOiJ2YXJpYXRpb24ifX0=--b50863606d6ba2f597650ed7335384ba20cf4712/beat.jpg\" />\n                                <div class=\"card-body text-decoration-none\">\n                                    <h5 class=\"card-title\">sepeda terbang</h5>\n                                    <p class=\"card-text text-black-50 text-small\">Baju</p>\n                                    <h5 class=\"card-text\">Rp 750.000</h5>\n                                </div>\n                            </div>\n                        </a>\n                    </div>\n                    <div class=\"col-12 col-md-4 col-lg-3\">\n                        <a class=\"product-card\" href=\"/products/51445\">\n                            <div class=\"card px-0 border-0 shadow h-100 pb-4 rounded-4\">\n                                <img class=\"card-img img-product-thumbnail p-3 rounded-4 overflow-hidden\" src=\"https://secondhand.binaracademy.org/rails/active_storage/representations/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBNjA0QXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--22bbf5f7059d64961da504a212f04df833044a67/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCem9MWm05eWJXRjBTU0lJYW5CbkJqb0dSVlE2RkhKbGMybDZaVjkwYjE5c2FXMXBkRnNIYVFJQUFXa0NBQUU9IiwiZXhwIjpudWxsLCJwdXIiOiJ2YXJpYXRpb24ifX0=--b50863606d6ba2f597650ed7335384ba20cf4712/beat.jpg\" />\n                                <div class=\"card-body text-decoration-none\">\n                                    <h5 class=\"card-title\">motor terbang</h5>\n                                    <p class=\"card-text text-black-50 text-small\">Baju</p>\n                                    <h5 class=\"card-text\">Rp 9.999</h5>\n                                </div>\n                            </div>\n                        </a>\n                    </div>\n                    <div class=\"col-12 col-md-4 col-lg-3\">\n                        <a class=\"product-card\" href=\"/products/51443\">\n                            <div class=\"card px-0 border-0 shadow h-100 pb-4 rounded-4\">\n                                <img class=\"card-img img-product-thumbnail p-3 rounded-4 overflow-hidden\" src=\"https://secondhand.binaracademy.org/rails/active_storage/representations/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBNFk0QXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--547dad6f3c73739e54c5ec5cc5ae1eaaa27426b2/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCem9MWm05eWJXRjBTU0lKYW5CbFp3WTZCa1ZVT2hSeVpYTnBlbVZmZEc5ZmJHbHRhWFJiQjJrQ0FBRnBBZ0FCIiwiZXhwIjpudWxsLCJwdXIiOiJ2YXJpYXRpb24ifX0=--81e6deaf02021c69d58a65bb1187ac9e7dcd87c6/download.jpeg\" />\n                                <div class=\"card-body text-decoration-none\">\n                                    <h5 class=\"card-title\">Obattya</h5>\n                                    <p class=\"card-text text-black-50 text-small\">Kesehatan</p>\n                                    <h5 class=\"card-text\">Rp 100.000</h5>\n                                </div>\n                            </div>\n                        </a>\n                    </div>\n                    <div class=\"col-12 col-md-4 col-lg-3\">\n                        <a class=\"product-card\" href=\"/products/51441\">\n                            <div class=\"card px-0 border-0 shadow h-100 pb-4 rounded-4\">\n                                <img class=\"card-img img-product-thumbnail p-3 rounded-4 overflow-hidden\" src=\"https://secondhand.binaracademy.org/rails/active_storage/representations/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBM2s0QXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--29803a44ed97b40a38c4d6caf05a0db5424e75d7/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCem9MWm05eWJXRjBTU0lJYW5CbkJqb0dSVlE2RkhKbGMybDZaVjkwYjE5c2FXMXBkRnNIYVFJQUFXa0NBQUU9IiwiZXhwIjpudWxsLCJwdXIiOiJ2YXJpYXRpb24ifX0=--b50863606d6ba2f597650ed7335384ba20cf4712/images.jpg\" />\n                                <div class=\"card-body text-decoration-none\">\n                                    <h5 class=\"card-title\">aye</h5>\n                                    <p class=\"card-text text-black-50 text-small\">Hobi</p>\n                                    <h5 class=\"card-text\">Rp 12.000</h5>\n                                </div>\n                            </div>\n                        </a>\n                    </div>\n                    <div class=\"col-12 col-md-4 col-lg-3\">\n                        <a class=\"product-card\" href=\"/products/51440\">\n                            <div class=\"card px-0 border-0 shadow h-100 pb-4 rounded-4\">\n                                <img alt=\"Download file\" class=\"card-img img-product-thumbnail p-3 rounded-4 overflow-hidden\" src=\"/placeholder.webp\" />\n                                <div class=\"card-body text-decoration-none\">\n                                    <h5 class=\"card-title\">Faerie Fire</h5>\n                                    <p class=\"card-text text-black-50 text-small\">Elektronik</p>\n                                    <h5 class=\"card-text\">Rp 16.000</h5>\n                                </div>\n                            </div>\n                        </a>\n                    </div>\n                    <div class=\"col-12 col-md-4 col-lg-3\">\n                        <a class=\"product-card\" href=\"/products/51439\">\n                            <div class=\"card px-0 border-0 shadow h-100 pb-4 rounded-4\">\n                                <img alt=\"Download file\" class=\"card-img img-product-thumbnail p-3 rounded-4 overflow-hidden\" src=\"/placeholder.webp\" />\n                                <div class=\"card-body text-decoration-none\">\n                                    <h5 class=\"card-title\">test the data  </h5>\n                                    <p class=\"card-text text-black-50 text-small\">Kesehatan</p>\n                                    <h5 class=\"card-text\">Rp 88.888</h5>\n                                </div>\n                            </div>\n                        </a>\n                    </div>\n                    <div class=\"col-12 col-md-4 col-lg-3\">\n                        <a class=\"product-card\" href=\"/products/51438\">\n                            <div class=\"card px-0 border-0 shadow h-100 pb-4 rounded-4\">\n                                <img class=\"card-img img-product-thumbnail p-3 rounded-4 overflow-hidden\" src=\"https://secondhand.binaracademy.org/rails/active_storage/representations/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBek00QXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--4b325728b7c25f40cc640354a77b68f1e00544e6/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCem9MWm05eWJXRjBTU0lJYW5CbkJqb0dSVlE2RkhKbGMybDZaVjkwYjE5c2FXMXBkRnNIYVFJQUFXa0NBQUU9IiwiZXhwIjpudWxsLCJwdXIiOiJ2YXJpYXRpb24ifX0=--b50863606d6ba2f597650ed7335384ba20cf4712/beat.jpg\" />\n                                <div class=\"card-body text-decoration-none\">\n                                    <h5 class=\"card-title\">Beat 500cc</h5>\n                                    <p class=\"card-text text-black-50 text-small\">Baju</p>\n                                    <h5 class=\"card-text\">Rp 1.500.000</h5>\n                                </div>\n                            </div>\n                        </a>\n                    </div>\n                    <div class=\"col-12 col-md-4 col-lg-3\">\n                        <a class=\"product-card\" href=\"/products/51436\">\n                            <div class=\"card px-0 border-0 shadow h-100 pb-4 rounded-4\">\n                                <img class=\"card-img img-product-thumbnail p-3 rounded-4 overflow-hidden\" src=\"https://secondhand.binaracademy.org/rails/active_storage/representations/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBL2czQXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--a9bbc3fdb1376957854e1b4c91102f43833e2f6c/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCem9MWm05eWJXRjBTU0lJYW5CbkJqb0dSVlE2RkhKbGMybDZaVjkwYjE5c2FXMXBkRnNIYVFJQUFXa0NBQUU9IiwiZXhwIjpudWxsLCJwdXIiOiJ2YXJpYXRpb24ifX0=--b50863606d6ba2f597650ed7335384ba20cf4712/wallpaperflare.com_wallpaper%20(18).jpg\" />\n                                <div class=\"card-body text-decoration-none\">\n                                    <h5 class=\"card-title\">Unbranded Frozen C...</h5>\n                                    <p class=\"card-text text-black-50 text-small\">Hobi</p>\n                                    <h5 class=\"card-text\">Rp 1.000.000</h5>\n                                </div>\n                            </div>\n                        </a>\n                    </div>\n                    <div class=\"col-12 col-md-4 col-lg-3\">\n                        <a class=\"product-card\" href=\"/products/51434\">\n                            <div class=\"card px-0 border-0 shadow h-100 pb-4 rounded-4\">\n                                <img class=\"card-img img-product-thumbnail p-3 rounded-4 overflow-hidden\" src=\"https://secondhand.binaracademy.org/rails/active_storage/representations/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBK2czQXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--ed1f555f0e102f9c1ae7adfcf3ddedfbebacaa51/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCem9MWm05eWJXRjBTU0lJYW5CbkJqb0dSVlE2RkhKbGMybDZaVjkwYjE5c2FXMXBkRnNIYVFJQUFXa0NBQUU9IiwiZXhwIjpudWxsLCJwdXIiOiJ2YXJpYXRpb24ifX0=--b50863606d6ba2f597650ed7335384ba20cf4712/wallpaperflare.com_wallpaper%20(1).jpg\" />\n                                <div class=\"card-body text-decoration-none\">\n                                    <h5 class=\"card-title\">gsfdgfdsgfds</h5>\n                                    <p class=\"card-text text-black-50 text-small\">Elektronik</p>\n                                    <h5 class=\"card-text\">Rp 4.345.345</h5>\n                                </div>\n                            </div>\n                        </a>\n                    </div>\n                    <div role=\"navigation\" aria-label=\"Pagination\" class=\"d-flex gap-4 align-items-center justify-content-center my-5\">\n                        <span class=\"previous_page disabled\" aria-disabled=\"true\">&#8592; Previous</span>\n                        <a class=\"next_page\" rel=\"next\" href=\"/?page=2\">Next &#8594;</a>\n                    </div>\n                </div>\n            </section>\n            <div class=\"sticky-bottom d-flex align-items-center justify-content-center py-4\">\n                <a class=\"btn btn-primary btn-lg rounded-4 d-inline-flex align-items-center justify-content-space-between px-5\" href=\"/products/new\">\n                    <i class=\"bi bi-plus fs-2 me-3\"></i>\n                    <span class=\"fs-6\">Jual</span>\n                </a>\n            </div>\n        </section>\n    </body>\n</html>"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Profiles",
+			"item": [
+				{
+					"name": "Update Profile",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Email is in a valid format\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData.user.email).to.match(/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/, \"Email format is not valid\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Verify that the 'avatar' object is present in the response\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData.user.avatar).to.exist.and.to.be.an('object');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Generate a random-looking Indonesian phone number\r",
+									"function generateRandomIndonesianPhoneNumber() {\r",
+									"    const prefixOptions = [\"081\", \"082\", \"085\", \"087\", \"089\"];\r",
+									"    const selectedPrefix = prefixOptions[Math.floor(Math.random() * prefixOptions.length)];\r",
+									"    const remainingDigits = Math.floor(Math.random() * 1000000000).toString().padStart(9, '0');\r",
+									"    return selectedPrefix + remainingDigits;\r",
+									"}\r",
+									"const randomIndonesianPhoneNumber = generateRandomIndonesianPhoneNumber();\r",
+									"// Store the random Indonesian phone number in an environment variable\r",
+									"pm.environment.set('random_indonesian_phone_number', randomIndonesianPhoneNumber);\r",
+									"\r",
+									"// Generate a random-looking Indonesian address\r",
+									"function generateRandomIndonesianAddress() {\r",
+									"    const streets = [\"Jalan Merdeka\", \"Jalan Pahlawan\", \"Jalan Raya\", \"Jalan Cendrawasih\", \"Jalan Budi Utomo\", \"Jalan Diponegoro\"];\r",
+									"    const cities = [\"Jakarta\", \"Surabaya\", \"Bandung\", \"Yogyakarta\", \"Medan\", \"Semarang\"];\r",
+									"    const provinces = [\"Jakarta\", \"East Java\", \"West Java\", \"Yogyakarta\", \"North Sumatra\", \"Central Java\"];\r",
+									"\r",
+									"    const randomStreet = streets[Math.floor(Math.random() * streets.length)];\r",
+									"    const randomCity = cities[Math.floor(Math.random() * cities.length)];\r",
+									"    const randomProvince = provinces[Math.floor(Math.random() * provinces.length)];\r",
+									"\r",
+									"    return `${randomStreet}, ${randomCity}, ${randomProvince}`;\r",
+									"}\r",
+									"const randomIndonesianAddress = generateRandomIndonesianAddress();\r",
+									"\r",
+									"// Store the random Indonesian address in an environment variable\r",
+									"pm.environment.set('random_indonesian_address', randomIndonesianAddress);\r",
+									"// Extract the city from the generated address\r",
+									"const city = randomIndonesianAddress.split(', ')[1];\r",
+									"// Store the extracted city in an environment variable\r",
+									"pm.environment.set('random_indonesian_city', city);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "user[name]",
+									"value": "{{random_name}}",
+									"description": "(Required) ",
+									"type": "text"
+								},
+								{
+									"key": "user[phone_number]",
+									"value": "{{random_indonesian_phone_number}}",
+									"description": "(Required) ",
+									"type": "text"
+								},
+								{
+									"key": "user[address]",
+									"value": "{{random_indonesian_address}}",
+									"type": "text"
+								},
+								{
+									"key": "user[city_id]",
+									"value": "{{random_indonesian_city}}",
+									"description": "(Required) ",
+									"type": "text"
+								},
+								{
+									"key": "user[avatar]",
+									"type": "file",
+									"src": "2919906.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/profiles.json",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"profiles.json"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - Profile Updated",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "multipart/form-data"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "user[name]",
+											"value": "Zahran",
+											"description": "(Required) ",
+											"type": "text"
+										},
+										{
+											"key": "user[address]",
+											"value": "Jalan jalan",
+											"description": "(Required) ",
+											"type": "text"
+										},
+										{
+											"key": "user[city_id]",
+											"value": "Jogja",
+											"description": "(Required) ",
+											"type": "text"
+										},
+										{
+											"key": "user[phone_number]",
+											"value": "081908001755",
+											"description": "(Required) ",
+											"type": "text"
+										},
+										{
+											"key": "user[avatar]",
+											"type": "file",
+											"src": "images (1).jpg"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/profiles.json",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"profiles.json"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "nginx/1.18.0"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 04 Nov 2023 07:34:00 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-Download-Options",
+									"value": "noopen"
+								},
+								{
+									"key": "X-Permitted-Cross-Domain-Policies",
+									"value": "none"
+								},
+								{
+									"key": "Referrer-Policy",
+									"value": "strict-origin-when-cross-origin"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"8a8a2f1fa1115f2e7c78f3b51219a551\""
+								},
+								{
+									"key": "Cache-Control",
+									"value": "max-age=0, private, must-revalidate"
+								},
+								{
+									"key": "Set-Cookie",
+									"value": "_binar_playground_secondhand_marketplace_session=gygZzHRCT7ZERlowGtPSQgHngHbT%2FOloyauLK3P1cPBLnd1XZ7TDNIA4CaIA7cNT5wePv%2FgJ7s83AIm79Si14kD2ufskPh3ASYvA6iH8TnU47nqCkusJ8i5kMWaQz5r6844cw4nSeZTx8TDNrMiX9c0aMBfvTQRFir8om9FNawUTdZJ6JqS8w%2BiHXs%2Fm%2BhfRFKzuciosgq2pILbksqbUzHu55vmqDsadrErQMSrY7mMBYLfaERrSYtEp8%2BCio%2Buyme%2Fss9N%2FP78O7BEU%2BSrL69w4FqNrEvDxrVpml2i24MkSu6FpGdub2Vz1FZjKTmBC%2FwaPgwlNjIEDwYFM--CUZXVQmhs6hmvsaW--CeGIkBBJTMDJZ9E6bHK%2BNg%3D%3D; path=/; secure; HttpOnly; SameSite=Lax"
+								},
+								{
+									"key": "X-Request-Id",
+									"value": "f105c989-e359-4edc-baa4-56c619ec8683"
+								},
+								{
+									"key": "X-Runtime",
+									"value": "0.911548"
+								},
+								{
+									"key": "Strict-Transport-Security",
+									"value": "max-age=63072000; includeSubDomains"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"user\": {\n        \"id\": 87281,\n        \"name\": \"Zahran\",\n        \"email\": \"zahransyukri02@gmail.com\",\n        \"phone_number\": \"081908001755\",\n        \"address\": \"Jalan jalan\",\n        \"avatar\": {\n            \"filename\": \"images (1).jpg\",\n            \"url\": \"/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBeTg0QXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--756e3e5d68a33472f49665751a80edee257e5309/images%20(1).jpg\"\n        }\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Profile",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Email is in a valid format\", function () {\r",
+									"  const responseData = pm.response.json();\r",
+									"  \r",
+									"  pm.expect(responseData).to.be.an('object');\r",
+									"  pm.expect(responseData.user.email).to.match(/^[\\w-]+(\\.[\\w-]+)*@([\\w-]+\\.)+[a-zA-Z]{2,7}$/);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									"pm.test(\"Avatar filename is a non-empty string\", function () {\r",
+									"  const responseData = pm.response.json();\r",
+									"\r",
+									"  pm.expect(responseData.user).to.exist;\r",
+									"  pm.expect(responseData.user.avatar).to.exist;\r",
+									"  pm.expect(responseData.user.avatar.filename).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Value should not be empty\");\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/profiles.json",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"profiles.json"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - Profile Retrieved",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/profiles.json",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"profiles.json"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "nginx/1.18.0"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 04 Nov 2023 07:35:08 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-Download-Options",
+									"value": "noopen"
+								},
+								{
+									"key": "X-Permitted-Cross-Domain-Policies",
+									"value": "none"
+								},
+								{
+									"key": "Referrer-Policy",
+									"value": "strict-origin-when-cross-origin"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"8a8a2f1fa1115f2e7c78f3b51219a551\""
+								},
+								{
+									"key": "Cache-Control",
+									"value": "max-age=0, private, must-revalidate"
+								},
+								{
+									"key": "Set-Cookie",
+									"value": "_binar_playground_secondhand_marketplace_session=htCSTqf%2FRwsidEzZ1UnRP%2BNg4ACfwxQDPNc9lUTzuR5R8FvKT1Y68VCUL6p5N4tiB3%2Fd4Ryf0jdxAW3w5fg2nuN3lQ%2FzUwtlQcBVpjWD%2F%2BMSSjVyzT%2BU6GdAUZ1PEPJH9SwvNi1x9TTlPFLGfq78HIpWr6m5ywNZSpA92%2Bj7IKylqWOEgKNbmBU1b5ivJTjefrSLQEJ7ymAmDwH44kCdTK4joFZofQPBaZfXsYeynmCA3nZorf2wMZ5BIr5i67yUUCZGsGLgAPWHHENJtVgXiEpHvVKuEiTcx9grQ%2FFzuI0tosmYOmZODbEnSShz0iK9dQfG0LFkmzh8Vlrs--4NaE%2BcakuzGSXhKz--tYuH6wsJd4cYBbIaHeE8pg%3D%3D; path=/; secure; HttpOnly; SameSite=Lax"
+								},
+								{
+									"key": "X-Request-Id",
+									"value": "740a8c46-c507-45ad-8f5b-6745005b9a5a"
+								},
+								{
+									"key": "X-Runtime",
+									"value": "0.009321"
+								},
+								{
+									"key": "Strict-Transport-Security",
+									"value": "max-age=63072000; includeSubDomains"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"user\": {\n        \"id\": 87281,\n        \"name\": \"Zahran\",\n        \"email\": \"zahransyukri02@gmail.com\",\n        \"phone_number\": \"081908001755\",\n        \"address\": \"Jalan jalan\",\n        \"avatar\": {\n            \"filename\": \"images (1).jpg\",\n            \"url\": \"/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBeTg0QXc9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--756e3e5d68a33472f49665751a80edee257e5309/images%20(1).jpg\"\n        }\n    }\n}"
+						}
+					]
+				}
+			]
+		}
+	]
+}
